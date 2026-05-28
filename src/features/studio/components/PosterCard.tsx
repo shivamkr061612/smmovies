@@ -56,9 +56,9 @@ export default function PosterCard({ movie, onClick }: PosterCardProps) {
           {/* Glass quality badge */}
           {movie.quality && (
             <span
-              className={`poster-quality absolute bottom-2 right-2 rounded-lg border border-white/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white shadow-lg backdrop-blur-xl ${getQualityStyle(
+              className={`poster-quality absolute bottom-2 right-2 rounded-lg border border-white/25 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white shadow-lg backdrop-blur-xl ${getQualityStyle(
                 movie.quality
-              )}/80`}
+              )}`}
             >
               {movie.quality}
             </span>
