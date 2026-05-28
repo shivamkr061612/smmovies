@@ -141,7 +141,7 @@ export default function PostPage({
   const displayImage = post?.imageUrl || fallbackImage || "";
 
   return (
-    <article className="post-content rounded-2xl border border-white/5 bg-[#15102a]/60 shadow-2xl ring-1 ring-white/5">
+    <article className="post-content overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] shadow-2xl ring-1 ring-white/5 backdrop-blur-2xl">
       {/* Top logos */}
       {POST_LOGOS_TOP && POST_LOGOS_TOP.length > 0 && (
         <div className="p-4 flex items-center justify-center gap-4">
@@ -151,35 +151,29 @@ export default function PostPage({
         </div>
       )}
 
-      {/* Back button */}
-      <div className="flex items-center gap-2 border-b border-white/5 px-4 py-3 sm:px-6">
+      {/* Back / Share - glass bar */}
+      <div className="flex items-center gap-2 border-b border-white/10 bg-white/[0.02] px-3 py-2.5 backdrop-blur-xl sm:px-5">
         <button
           onClick={onBack}
-          className="inline-flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-sm font-medium text-slate-300 transition-colors hover:bg-white/5 hover:text-white"
+          className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm font-medium text-slate-200 backdrop-blur-xl transition-all hover:bg-white/15 hover:text-white active:scale-95"
         >
-          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-          </svg>
+          <ArrowLeft className="h-4 w-4" strokeWidth={2.5} />
           Back
         </button>
         <button
           onClick={() => {
             try {
               const path = `/${slug.replace(/^\//, "").replace(/\/$/, "")}`;
-              const full = (window.location && window.location.origin) ? `${window.location.origin}${path}` : path;
+              const full = window.location?.origin ? `${window.location.origin}${path}` : path;
               navigator.clipboard?.writeText(full);
-              // eslint-disable-next-line no-alert
               alert(`Copied to clipboard: ${full}`);
-            } catch (err) {
-              // noop
+            } catch {
+              /* noop */
             }
           }}
-          className="inline-flex items-center gap-1 rounded-lg px-2 py-1.5 text-sm font-medium text-slate-300 transition-colors hover:bg-white/5 hover:text-white"
+          className="ml-auto inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm font-medium text-slate-200 backdrop-blur-xl transition-all hover:bg-white/15 hover:text-white active:scale-95"
         >
-          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 7h3a2 2 0 012 2v9a2 2 0 01-2 2H8a2 2 0 01-2-2v-3" />
-            <path strokeLinecap="round" strokeLinejoin="round" d="M10 11V5a2 2 0 012-2h6" />
-          </svg>
+          <Share2 className="h-4 w-4" strokeWidth={2.2} />
           Share
         </button>
       </div>
@@ -193,9 +187,7 @@ export default function PostPage({
         <div className="post-meta mt-4 flex flex-wrap items-center gap-3 text-sm text-slate-400">
           {post?.date && (
             <span className="post-date inline-flex items-center gap-1.5">
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
+              <Calendar className="h-4 w-4" strokeWidth={2} />
               {post.date}
             </span>
           )}
@@ -206,7 +198,7 @@ export default function PostPage({
                 <button
                   key={c.slug}
                   onClick={() => onSelectCategory(c.slug)}
-                  className="category-tag inline-flex items-center rounded-md bg-indigo-500/15 px-2.5 py-1 text-xs font-medium text-indigo-300 ring-1 ring-indigo-500/30 transition-colors hover:bg-indigo-500/25 hover:text-indigo-200"
+                  className="category-tag inline-flex items-center rounded-full border border-indigo-400/30 bg-indigo-500/10 px-3 py-1 text-xs font-medium text-indigo-200 backdrop-blur-xl transition-all hover:bg-indigo-500/20 hover:text-white"
                 >
                   {c.name}
                 </button>
