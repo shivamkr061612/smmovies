@@ -241,13 +241,12 @@ export default function App() {
     : "Latest Releases";
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#0e0820] via-[#0a0618] to-[#0e0820]">
-      <PopunderLoader />
-      {/* Decorative background glows */}
+    <div className="min-h-screen bg-black">
+      {/* Decorative red background glows */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute -top-40 left-1/2 -translate-x-1/2 rounded-full bg-indigo-700/15 blur-[80px] h-[180px] w-[180px] sm:h-[320px] sm:w-[320px] md:h-[500px] md:w-[500px]" />
-        <div className="absolute top-1/3 right-0 translate-x-1/3 rounded-full bg-purple-700/10 blur-[80px] h-[140px] w-[140px] sm:h-[280px] sm:w-[280px] md:h-[400px] md:w-[400px]" />
-        <div className="absolute bottom-0 left-0 -translate-x-1/3 rounded-full bg-red-700/10 blur-[100px] h-[140px] w-[140px] sm:h-[280px] sm:w-[280px] md:h-[400px] md:w-[400px]" />
+        <div className="absolute -top-40 left-1/2 -translate-x-1/2 rounded-full bg-red-700/15 blur-[80px] h-[180px] w-[180px] sm:h-[320px] sm:w-[320px] md:h-[500px] md:w-[500px]" />
+        <div className="absolute top-1/3 right-0 translate-x-1/3 rounded-full bg-red-600/10 blur-[80px] h-[140px] w-[140px] sm:h-[280px] sm:w-[280px] md:h-[400px] md:w-[400px]" />
+        <div className="absolute bottom-0 left-0 -translate-x-1/3 rounded-full bg-red-800/10 blur-[100px] h-[140px] w-[140px] sm:h-[280px] sm:w-[280px] md:h-[400px] md:w-[400px]" />
       </div>
 
       <Header
@@ -306,7 +305,7 @@ export default function App() {
             {/* Status */}
             {loading && (
               <div className="flex items-center gap-2 text-sm text-slate-400">
-                <span className="h-3 w-3 animate-spin rounded-full border-2 border-indigo-400 border-r-transparent" />
+                <span className="h-3 w-3 animate-spin rounded-full border-2 border-red-500 border-r-transparent" />
                 Loading...
               </div>
             )}
