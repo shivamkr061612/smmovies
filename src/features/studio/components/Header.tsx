@@ -26,7 +26,7 @@ export default function Header({ searchValue, onSearch, onMenuClick, onLogoClick
 
   return (
     <>
-    <header className="sticky top-0 z-40 border-b border-white/5 bg-[#1a1530]/90 backdrop-blur-xl">
+    <header className="sticky top-0 z-40 border-b border-white/5 bg-[#0a0a0a]/90 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-3 py-3 sm:gap-4 sm:px-4 sm:py-4">
         {/* Hamburger */}
         <button

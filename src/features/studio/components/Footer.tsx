@@ -2,7 +2,7 @@ import { FOOTER_AD_HTML, SITE_LOGO, SITE_NAME } from "../config/site";
 
 export default function Footer() {
   return (
-    <footer className="relative mt-12 border-t border-white/5 bg-[#0a0618]/60 py-6">
+    <footer className="relative mt-12 border-t border-white/5 bg-[#000000]/60 py-6">
       <div className="mx-auto max-w-7xl px-4 text-center">
         {FOOTER_AD_HTML && (
           <div className="mb-4" dangerouslySetInnerHTML={{ __html: FOOTER_AD_HTML }} />

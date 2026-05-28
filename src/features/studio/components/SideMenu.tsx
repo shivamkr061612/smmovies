@@ -42,12 +42,12 @@ export default function SideMenu({
 
       {/* Drawer */}
       <aside
-        className={`mobile-menu-panel fixed left-0 top-0 z-50 h-full w-[85%] max-w-sm overflow-y-auto bg-[#1a1530] shadow-2xl ring-1 ring-white/10 transition-transform duration-300 ease-out ${
+        className={`mobile-menu-panel fixed left-0 top-0 z-50 h-full w-[85%] max-w-sm overflow-y-auto bg-[#0a0a0a] shadow-2xl ring-1 ring-white/10 transition-transform duration-300 ease-out ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         {/* Header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-white/10 bg-[#1a1530]/95 px-4 py-4 backdrop-blur-xl">
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-white/10 bg-[#0a0a0a]/95 px-4 py-4 backdrop-blur-xl">
           <div className="flex items-center gap-2">
             {SITE_LOGO ? (
               <img src={SITE_LOGO} alt={SITE_NAME || 'logo'} className="h-8 w-8 rounded-md object-contain" />

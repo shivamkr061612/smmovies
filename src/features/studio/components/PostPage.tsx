@@ -283,7 +283,7 @@ export default function PostPage({
 
             {/* All categories (from listing) */}
             {categories && categories.length > 0 && (
-              <div className="mt-8 rounded-2xl border border-white/5 bg-[#0f1220]/40 p-4">
+              <div className="mt-8 rounded-2xl border border-white/5 bg-[#0a0a0a]/40 p-4">
                 <h4 className="mb-3 text-sm font-bold text-slate-300">All Categories</h4>
                 <div className="flex flex-wrap gap-2">
                   {categories.map((c) => (

@@ -9,6 +9,6 @@ export const Route = createFileRoute("/$")({
 function Splat() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
-  if (!mounted) return <div className="min-h-screen bg-[#0e0820]" />;
+  if (!mounted) return <div className="min-h-screen bg-[#000000]" />;
   return <StudioApp />;
 }

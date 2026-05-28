@@ -7,7 +7,7 @@ export const Route = createFileRoute("/")({
     meta: [
       { title: "MoviesDrive — Download Latest Movies & Web Series in HD, 4K" },
       { name: "description", content: "Download latest Bollywood, Hollywood, South Indian movies and web series in 480p, 720p, 1080p and 4K quality." },
-      { name: "theme-color", content: "#0e0820" },
+      { name: "theme-color", content: "#000000" },
     ],
   }),
   component: Index,
@@ -16,6 +16,6 @@ export const Route = createFileRoute("/")({
 function Index() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
-  if (!mounted) return <div className="min-h-screen bg-[#0e0820]" />;
+  if (!mounted) return <div className="min-h-screen bg-[#000000]" />;
   return <StudioApp />;
 }
