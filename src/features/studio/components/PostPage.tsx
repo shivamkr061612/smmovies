@@ -248,13 +248,17 @@ export default function PostPage({
             {/* Native banner between body and quick downloads */}
             <NativeBanner className="my-6" />
 
-            {/* Quick download links section */}
+            {/* Quick download links section — iOS glass */}
             {post.downloadLinks.length > 0 && (
-              <div className="mt-8 rounded-2xl border border-indigo-500/20 bg-indigo-950/30 p-5">
+              <div className="mt-8 overflow-hidden rounded-3xl border border-white/15 bg-gradient-to-br from-indigo-500/15 via-fuchsia-500/10 to-cyan-500/10 p-5 shadow-xl backdrop-blur-2xl">
                 <h3 className="mb-4 flex items-center gap-2 text-base font-bold text-white">
-                  <span className="text-xl">⬇️</span> Quick Download Links
+                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl border border-white/20 bg-white/10 backdrop-blur-xl">
+                    <Download className="h-4 w-4 text-white" strokeWidth={2.5} />
+                  </span>
+                  Quick Download Links
+                  <Sparkles className="h-4 w-4 text-cyan-300" strokeWidth={2.2} />
                 </h3>
-                <div className="grid gap-2 sm:grid-cols-2">
+                <div className="grid gap-2.5 sm:grid-cols-2">
                   {post.downloadLinks.slice(0, 20).map((link, i) => (
                     <a
                       key={i}
@@ -262,12 +266,15 @@ export default function PostPage({
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => openSmartlink()}
-                      className="group flex items-center justify-between gap-2 rounded-xl bg-white/5 px-4 py-3 text-sm font-medium text-slate-200 ring-1 ring-white/10 transition-all hover:bg-indigo-600 hover:text-white hover:shadow-lg"
+                      className="group flex items-center justify-between gap-3 rounded-2xl border border-white/15 bg-white/[0.08] px-4 py-3 text-sm font-medium text-slate-100 shadow-sm backdrop-blur-xl transition-all hover:-translate-y-0.5 hover:border-white/30 hover:bg-white/[0.16] hover:shadow-lg active:scale-[0.98]"
                     >
-                      <span className="line-clamp-1">{link.label}</span>
-                      <svg className="h-4 w-4 flex-shrink-0 opacity-60 group-hover:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                      </svg>
+                      <span className="flex min-w-0 items-center gap-2.5">
+                        <span className="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg border border-white/15 bg-white/10 text-cyan-200">
+                          <Download className="h-3.5 w-3.5" strokeWidth={2.5} />
+                        </span>
+                        <span className="line-clamp-1">{link.label}</span>
+                      </span>
+                      <ArrowRight className="h-4 w-4 flex-shrink-0 text-white/60 transition-transform group-hover:translate-x-0.5 group-hover:text-white" strokeWidth={2.2} />
                     </a>
                   ))}
                 </div>
