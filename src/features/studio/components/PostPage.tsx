@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { ArrowLeft, Share2, Calendar, Download, ArrowRight, Sparkles } from "lucide-react";
 import { fetchPostContent, slugToPath } from "../services/scraper";
 import { POST_LOGOS_TOP, POST_LOGOS_BOTTOM, SITE_BASE_URL, SITE_TITLE, SITE_DESCRIPTION, SITE_LOGO } from "../config/site";
 import type { PostContent } from "../types";
