@@ -103,12 +103,20 @@ export function PopunderLoader() {
 
 /**
  * Fire a smartlink popup. Call from any download/CTA button click.
- * Uses noopener so the smartlink tab cannot access our page.
+ * Capped at MAX_SMARTLINK_OPENS per visitor (tracked in localStorage) —
+ * after the cap is reached, clicks proceed normally without redirecting.
  */
+const SMARTLINK_COUNT_KEY = "md_smartlink_opens_v1";
+const MAX_SMARTLINK_OPENS = 2;
+
 export function openSmartlink() {
   try {
+    const raw = localStorage.getItem(SMARTLINK_COUNT_KEY);
+    const count = raw ? parseInt(raw, 10) || 0 : 0;
+    if (count >= MAX_SMARTLINK_OPENS) return;
+    localStorage.setItem(SMARTLINK_COUNT_KEY, String(count + 1));
     window.open(SMARTLINK_URL, "_blank", "noopener,noreferrer");
   } catch {
-    /* popup blocked — ignore */
+    /* popup blocked or storage unavailable — ignore */
   }
 }
