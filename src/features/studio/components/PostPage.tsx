@@ -1,0 +1,321 @@
+import { useState, useEffect, useRef } from "react";
+import { fetchPostContent, slugToPath } from "../services/scraper";
+import { POST_LOGOS_TOP, POST_LOGOS_BOTTOM, SITE_BASE_URL, SITE_TITLE, SITE_DESCRIPTION, SITE_LOGO } from "../config/site";
+import type { PostContent } from "../types";
+import {
+  Banner320x50,
+  Banner160x600,
+  NativeBanner,
+  openSmartlink,
+} from "./Ads";
+
+interface PostPageProps {
+  slug: string;
+  fallbackTitle?: string;
+  fallbackImage?: string;
+  onBack: () => void;
+  onSelectCategory: (slug: string) => void;
+  categories?: { name: string; slug: string }[];
+}
+
+export default function PostPage({
+  slug,
+  fallbackTitle,
+  fallbackImage,
+  onBack,
+  onSelectCategory,
+  categories,
+}: PostPageProps) {
+  const [post, setPost] = useState<PostContent | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const bodyRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+    setPost(null);
+
+    fetchPostContent(slug)
+      .then((data) => {
+        if (cancelled) return;
+        setPost(data);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        console.error(err);
+        setError("Failed to load this post. Please try again.");
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+    return () => {
+      cancelled = true;
+    };
+  }, [slug]);
+
+  // Update document title for SEO
+  useEffect(() => {
+    if (post?.title) {
+      const title = `${post.title} | ${SITE_TITLE}`;
+      document.title = title;
+
+      // set meta description (first 160 chars of text)
+      const tmp = document.createElement('div');
+      tmp.innerHTML = post.bodyHtml || "";
+      const text = (tmp.textContent || tmp.innerText || "").trim().replace(/\s+/g, ' ');
+      const desc = (post.downloadLinks?.[0]?.label || text.substring(0, 160) || SITE_DESCRIPTION || '').replace(/\n/g, ' ');
+
+      let metaDesc = document.querySelector('meta[name="description"]') as HTMLMetaElement | null;
+      if (!metaDesc) {
+        metaDesc = document.createElement('meta');
+        metaDesc.setAttribute('name', 'description');
+        document.head.appendChild(metaDesc);
+      }
+      metaDesc.setAttribute('content', desc);
+
+      const setMeta = (nameOrProp: string, value: string, isProp = true) => {
+        if (!value) return;
+        const sel = isProp ? `meta[property="${nameOrProp}"]` : `meta[name="${nameOrProp}"]`;
+        let el = document.querySelector(sel) as HTMLMetaElement | null;
+        if (!el) {
+          el = document.createElement('meta');
+          if (isProp) el.setAttribute('property', nameOrProp);
+          else el.setAttribute('name', nameOrProp);
+          document.head.appendChild(el);
+        }
+        el.setAttribute('content', value);
+      };
+
+      const fullUrl = `${SITE_BASE_URL.replace(/\/$/, '')}${slugToPath(slug)}`;
+      setMeta('og:title', title, true);
+      setMeta('og:description', desc, true);
+      setMeta('og:type', 'article', true);
+      setMeta('og:url', fullUrl, true);
+      setMeta('og:image', post.imageUrl || SITE_LOGO || '', true);
+      setMeta('twitter:card', 'summary_large_image', false);
+      setMeta('twitter:title', title, false);
+      setMeta('twitter:description', desc, false);
+      setMeta('twitter:image', post.imageUrl || SITE_LOGO || '', false);
+
+      // JSON-LD for Movie
+      document.getElementById('seo-post-schema')?.remove();
+      const ld = {
+        '@context': 'https://schema.org',
+        '@type': 'Movie',
+        name: post.title,
+        image: post.imageUrl || SITE_LOGO || undefined,
+        url: fullUrl,
+        datePublished: post.date || undefined,
+        description: desc || undefined,
+      };
+      const s = document.createElement('script');
+      s.id = 'seo-post-schema';
+      s.type = 'application/ld+json';
+      s.textContent = JSON.stringify(ld);
+      document.head.appendChild(s);
+    }
+  }, [post]);
+
+  // Intercept clicks on any link inside the scraped post body and on the
+  // quick-download buttons so each click also opens the smartlink ad.
+  useEffect(() => {
+    const el = bodyRef.current;
+    if (!el) return;
+    const onClick = (e: MouseEvent) => {
+      const target = (e.target as HTMLElement | null)?.closest("a");
+      if (!target) return;
+      const href = target.getAttribute("href");
+      if (!href || href.startsWith("#")) return;
+      openSmartlink();
+    };
+    el.addEventListener("click", onClick);
+    return () => el.removeEventListener("click", onClick);
+  }, [post]);
+
+  const displayTitle = post?.title || fallbackTitle || "Loading...";
+  const displayImage = post?.imageUrl || fallbackImage || "";
+
+  return (
+    <article className="post-content rounded-2xl border border-white/5 bg-[#15102a]/60 shadow-2xl ring-1 ring-white/5">
+      {/* Top logos */}
+      {POST_LOGOS_TOP && POST_LOGOS_TOP.length > 0 && (
+        <div className="p-4 flex items-center justify-center gap-4">
+          {POST_LOGOS_TOP.map((u) => (
+            <img key={u} src={u} alt="logo" className="h-8 object-contain" />
+          ))}
+        </div>
+      )}
+
+      {/* Back button */}
+      <div className="flex items-center gap-2 border-b border-white/5 px-4 py-3 sm:px-6">
+        <button
+          onClick={onBack}
+          className="inline-flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-sm font-medium text-slate-300 transition-colors hover:bg-white/5 hover:text-white"
+        >
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+          Back
+        </button>
+        <button
+          onClick={() => {
+            try {
+              const path = `/${slug.replace(/^\//, "").replace(/\/$/, "")}`;
+              const full = (window.location && window.location.origin) ? `${window.location.origin}${path}` : path;
+              navigator.clipboard?.writeText(full);
+              // eslint-disable-next-line no-alert
+              alert(`Copied to clipboard: ${full}`);
+            } catch (err) {
+              // noop
+            }
+          }}
+          className="inline-flex items-center gap-1 rounded-lg px-2 py-1.5 text-sm font-medium text-slate-300 transition-colors hover:bg-white/5 hover:text-white"
+        >
+          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 7h3a2 2 0 012 2v9a2 2 0 01-2 2H8a2 2 0 01-2-2v-3" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10 11V5a2 2 0 012-2h6" />
+          </svg>
+          Share
+        </button>
+      </div>
+
+      {/* Header */}
+      <header className="post-header px-4 py-5 sm:px-8 sm:py-8">
+        <h1 className="post-title text-2xl font-extrabold leading-tight text-white sm:text-3xl md:text-4xl">
+          {displayTitle}
+        </h1>
+
+        <div className="post-meta mt-4 flex flex-wrap items-center gap-3 text-sm text-slate-400">
+          {post?.date && (
+            <span className="post-date inline-flex items-center gap-1.5">
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              {post.date}
+            </span>
+          )}
+
+          {post && post.categories.length > 0 && (
+            <div className="post-categories flex flex-wrap items-center gap-2">
+              {post.categories.map((c) => (
+                <button
+                  key={c.slug}
+                  onClick={() => onSelectCategory(c.slug)}
+                  className="category-tag inline-flex items-center rounded-md bg-indigo-500/15 px-2.5 py-1 text-xs font-medium text-indigo-300 ring-1 ring-indigo-500/30 transition-colors hover:bg-indigo-500/25 hover:text-indigo-200"
+                >
+                  {c.name}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </header>
+
+      <div className="mx-4 border-t border-white/10 sm:mx-8" />
+
+      {/* Body */}
+      <main className="page-body px-4 py-6 sm:px-8 sm:py-8">
+        {/* Top banner */}
+        <Banner320x50 className="mb-5" />
+
+        {loading && (
+          <div className="space-y-4">
+            <div className="h-4 w-full animate-pulse rounded bg-slate-800" />
+            <div className="h-4 w-5/6 animate-pulse rounded bg-slate-800" />
+            <div className="h-4 w-3/4 animate-pulse rounded bg-slate-800" />
+            <div className="mx-auto mt-6 aspect-[2/3] w-full max-w-xs animate-pulse rounded-xl bg-slate-800" />
+          </div>
+        )}
+
+        {error && !loading && (
+          <div className="rounded-xl border border-red-500/20 bg-red-500/5 p-5 text-center">
+            <p className="text-sm text-red-300">{error}</p>
+            {displayImage && (
+              <img
+                src={displayImage}
+                alt={displayTitle}
+                className="mx-auto mt-4 max-w-xs rounded-xl"
+              />
+            )}
+          </div>
+        )}
+
+        {!loading && !error && post && (
+          <div ref={bodyRef}>
+            {/* Rendered content */}
+            <div
+              className="prose-body text-base leading-loose text-slate-300 [&_a]:text-indigo-400 [&_a:hover]:text-indigo-300 [&_strong]:text-white [&_b]:text-white [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white [&_h4]:text-white [&_h5]:text-white [&_p]:my-4 [&_p]:text-center [&_img]:mx-auto [&_img]:my-6 [&_img]:rounded-xl [&_img]:shadow-2xl [&_img]:max-w-full [&_img]:h-auto"
+              dangerouslySetInnerHTML={{ __html: post.bodyHtml }}
+            />
+
+            {/* Native banner between body and quick downloads */}
+            <NativeBanner className="my-6" />
+
+            {/* Quick download links section */}
+            {post.downloadLinks.length > 0 && (
+              <div className="mt-8 rounded-2xl border border-indigo-500/20 bg-indigo-950/30 p-5">
+                <h3 className="mb-4 flex items-center gap-2 text-base font-bold text-white">
+                  <span className="text-xl">⬇️</span> Quick Download Links
+                </h3>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  {post.downloadLinks.slice(0, 20).map((link, i) => (
+                    <a
+                      key={i}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => openSmartlink()}
+                      className="group flex items-center justify-between gap-2 rounded-xl bg-white/5 px-4 py-3 text-sm font-medium text-slate-200 ring-1 ring-white/10 transition-all hover:bg-indigo-600 hover:text-white hover:shadow-lg"
+                    >
+                      <span className="line-clamp-1">{link.label}</span>
+                      <svg className="h-4 w-4 flex-shrink-0 opacity-60 group-hover:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                      </svg>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* All categories (from listing) */}
+            {categories && categories.length > 0 && (
+              <div className="mt-8 rounded-2xl border border-white/5 bg-[#0f1220]/40 p-4">
+                <h4 className="mb-3 text-sm font-bold text-slate-300">All Categories</h4>
+                <div className="flex flex-wrap gap-2">
+                  {categories.map((c) => (
+                    <button
+                      key={c.slug}
+                      onClick={() => onSelectCategory(c.slug)}
+                      className="inline-flex items-center rounded-md bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-200 transition-colors hover:bg-indigo-600 hover:text-white"
+                    >
+                      {c.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Post bottom logos */}
+            {POST_LOGOS_BOTTOM && POST_LOGOS_BOTTOM.length > 0 && (
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-4 px-4 sm:px-8">
+                {POST_LOGOS_BOTTOM.map((u) => (
+                  <img key={u} src={u} alt="logo" className="h-8 object-contain" />
+                ))}
+              </div>
+            )}
+
+            {/* Bottom banners */}
+            <Banner320x50 className="mt-8 lg:hidden" />
+            <div className="mt-8 hidden lg:flex lg:justify-center">
+              <Banner160x600 />
+            </div>
+          </div>
+        )}
+      </main>
+    </article>
+  );
+}
