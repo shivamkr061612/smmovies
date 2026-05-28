@@ -51,14 +51,14 @@ export default function PosterCard({ movie, onClick }: PosterCardProps) {
           </div>
 
           {/* Subtle hover overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-60 transition-opacity duration-300 group-hover:opacity-100" />
 
-          {/* poster-quality badge (bottom-right like screenshot) */}
+          {/* Glass quality badge */}
           {movie.quality && (
             <span
-              className={`poster-quality absolute bottom-2 right-2 rounded-md px-2.5 py-1 text-xs font-bold uppercase tracking-wide shadow-lg ${getQualityStyle(
+              className={`poster-quality absolute bottom-2 right-2 rounded-lg border border-white/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white shadow-lg backdrop-blur-xl ${getQualityStyle(
                 movie.quality
-              )}`}
+              )}/80`}
             >
               {movie.quality}
             </span>
