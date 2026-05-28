@@ -25,7 +25,7 @@ export default function PosterCard({ movie, onClick }: PosterCardProps) {
   // Determine quality badge style
   const getQualityStyle = (q: string) => {
     const u = q.toUpperCase();
-    if (u.includes("4K") || u.includes("2160")) return "bg-purple-600 text-white";
+    if (u.includes("4K") || u.includes("2160")) return "bg-red-600 text-white";
     if (u.includes("HDTC") || u.includes("CAM")) return "bg-amber-600 text-white";
     if (u.includes("WEB") || u.includes("BLURAY") || u.includes("HD")) return "bg-emerald-600 text-white";
     return "bg-slate-700 text-white";
@@ -34,9 +34,9 @@ export default function PosterCard({ movie, onClick }: PosterCardProps) {
   return (
     <button
       onClick={() => onClick(movie)}
-      className="group block w-full text-left transition-transform duration-300 hover:-translate-y-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-slate-950 rounded-2xl"
+      className="group block w-full text-left transition-transform duration-300 hover:-translate-y-1.5 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-slate-950 rounded-2xl"
     >
-      <div className="poster-card relative overflow-hidden rounded-2xl bg-slate-900 shadow-lg shadow-black/40 ring-1 ring-white/5 group-hover:ring-indigo-400/40 group-hover:shadow-2xl group-hover:shadow-indigo-500/20 transition-all duration-300">
+      <div className="poster-card relative overflow-hidden rounded-2xl bg-slate-900 shadow-lg shadow-black/40 ring-1 ring-white/5 group-hover:ring-red-400/40 group-hover:shadow-2xl group-hover:shadow-red-500/20 transition-all duration-300">
         {/* poster-inner */}
         <div className="poster-inner relative aspect-[2/3] overflow-hidden">
           {/* poster-image */}
@@ -67,7 +67,7 @@ export default function PosterCard({ movie, onClick }: PosterCardProps) {
 
         {/* poster-info */}
         <div className="poster-info p-3 sm:p-3.5">
-          <p className="poster-title text-sm font-semibold leading-snug text-white line-clamp-3 group-hover:text-indigo-300 transition-colors duration-300 sm:text-[0.95rem]">
+          <p className="poster-title text-sm font-semibold leading-snug text-white line-clamp-3 group-hover:text-red-300 transition-colors duration-300 sm:text-[0.95rem]">
             {movie.title}
           </p>
         </div>

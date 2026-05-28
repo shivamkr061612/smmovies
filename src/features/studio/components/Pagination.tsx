@@ -45,7 +45,7 @@ export default function Pagination({
         disabled={!hasPrev}
         className={`page-btn prev-btn flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-sm font-semibold transition-all duration-300 ${
           hasPrev
-            ? "bg-white/5 text-slate-200 hover:bg-indigo-600 hover:text-white hover:shadow-lg active:scale-95"
+            ? "bg-white/5 text-slate-200 hover:bg-red-600 hover:text-white hover:shadow-lg active:scale-95"
             : "cursor-not-allowed text-slate-600 opacity-40"
         }`}
       >
@@ -71,7 +71,7 @@ export default function Pagination({
               onClick={() => onPageChange(page)}
               className={`page-num min-w-[36px] rounded-xl px-3 py-2 text-sm font-semibold transition-all duration-300 ${
                 page === currentPage
-                  ? "page-num active bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/30 scale-105 ring-2 ring-indigo-400/35"
+                  ? "page-num active bg-gradient-to-r from-red-600 to-red-600 text-white shadow-lg shadow-red-500/30 scale-105 ring-2 ring-red-400/35"
                   : "bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white hover:shadow-md"
               }`}
             >
@@ -87,7 +87,7 @@ export default function Pagination({
         disabled={!hasNext}
         className={`page-btn next-btn flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-sm font-semibold transition-all duration-300 ${
           hasNext
-            ? "bg-white/5 text-slate-200 hover:bg-indigo-600 hover:text-white hover:shadow-lg active:scale-95"
+            ? "bg-white/5 text-slate-200 hover:bg-red-600 hover:text-white hover:shadow-lg active:scale-95"
             : "cursor-not-allowed text-slate-600 opacity-40"
         }`}
       >

@@ -175,7 +175,7 @@
 
 /* Selection */
 ::selection {
-  background-color: rgba(99, 102, 241, 0.3);
+  background-color: rgba(220, 38, 38, 0.45);
   color: white;
 }
 
@@ -185,53 +185,43 @@ body::-webkit-scrollbar {
 }
 
 body::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: #000;
 }
 
 body::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #2a0000;
   border-radius: 3px;
 }
 
 body::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #dc2626;
 }
 .page-body h5 a {
-    background-image: linear-gradient(135deg, rgb(95, 1, 24, 255) 0%, rgb(122, 92, 255) 45%, rgb(212, 107, 255) 75%, rgb(255, 110, 199) 100%);
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    box-shadow: rgba(122, 92, 255, 0.3) 0px 4px 15px;
+    background-image: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+    border-radius: 10px;
+    box-shadow: rgba(220, 38, 38, 0.35) 0px 4px 15px;
     color: rgb(255, 255, 255);
     display: inline-block;
     font-weight: 600;
-    padding-bottom: 12px;
-    padding-left: 30px;
-    padding-right: 30px;
-    padding-top: 12px;
+    padding: 12px 30px;
     text-decoration-line: none;
-    transition-duration: 0.3s;
-    transition-property: all;
-    transition-timing-function: ease;
-}.page-body h3, .page-body h4, .page-body h5 {
-color: rgb(255, 255, 255);
-margin-bottom: 15px;
-margin-left: 0px;
-margin-right: 0px;
-margin-top: 25px;
+    transition: all 0.3s ease;
+}
+.page-body h3, .page-body h4, .page-body h5 {
+  color: rgb(255, 255, 255);
+  margin: 25px 0 15px 0;
 }
 
 .page-body h5 {
-font-size: 1rem;
+  font-size: 1rem;
 }
 
-/* Poster card styling — soft border, rounded portrait, hover glow */
+/* Poster card styling — black surface, white hairline, red hover glow */
 .poster-card {
-  background-image: linear-gradient(145deg, rgba(25,5,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
+  background: #0a0a0a;
   border-radius: 16px;
   border: 1px solid rgba(255,255,255,0.08);
-  box-shadow: 0 6px 20px rgba(2,6,23,0.45), inset 0 1px 0 rgba(255,255,255,0.02);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.03);
   cursor: pointer;
   padding: 8px;
   transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.25s ease;
@@ -250,8 +240,8 @@ font-size: 1rem;
 }
 .poster-card:hover {
   transform: translateY(-6px);
-  border-color: rgba(99,102,241,0.35);
-  box-shadow: 0 18px 40px rgba(2,6,23,0.6), 0 0 24px rgba(99,102,241,0.14);
+  border-color: rgba(220, 38, 38, 0.55);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.8), 0 0 24px rgba(220, 38, 38, 0.25);
 }
 
 /* If you want a portrait-only variant */
@@ -261,12 +251,13 @@ font-size: 1rem;
 
 /* Mobile menu backdrop and panel custom styling */
 .mobile-backdrop {
-  background: rgba(6,12,80,0.55);
-  backdrop-filter: blur(8px) saturate(120%);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(10px) saturate(140%);
 }
 .mobile-menu-panel {
-  background: linear-gradient(180deg, rgba(6,10,40,0.7), rgba(10,12,60,0.7));
-  backdrop-filter: blur(10px) saturate(120%);
+  background: linear-gradient(180deg, rgba(10,10,10,0.92), rgba(0,0,0,0.92));
+  backdrop-filter: blur(14px) saturate(140%);
+  border-right: 1px solid rgba(255,255,255,0.08);
 }
 
 /* Styles for side-nav HTML structure provided */
@@ -409,5 +400,5 @@ font-size: 1rem;
   font-weight: 700;
 }
 .mobile-header-slider .mhs-dot.active {
-  background: rgba(99,102,241,0.9);
+  background: rgba(220, 38, 38, 0.95);
 }
