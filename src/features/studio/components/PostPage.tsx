@@ -198,7 +198,7 @@ export default function PostPage({
                 <button
                   key={c.slug}
                   onClick={() => onSelectCategory(c.slug)}
-                  className="category-tag inline-flex items-center rounded-full border border-red-400/30 bg-red-500/10 px-3 py-1 text-xs font-medium text-indigo-200 backdrop-blur-xl transition-all hover:bg-red-500/20 hover:text-white"
+                  className="category-tag inline-flex items-center rounded-full border border-red-400/30 bg-red-500/10 px-3 py-1 text-xs font-medium text-red-200 backdrop-blur-xl transition-all hover:bg-red-500/20 hover:text-white"
                 >
                   {c.name}
                 </button>
