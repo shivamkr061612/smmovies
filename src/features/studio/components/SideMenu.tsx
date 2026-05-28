@@ -84,7 +84,7 @@ export default function SideMenu({
             }}
             className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-colors ${
               !selectedCategory
-                ? "bg-indigo-600 text-white"
+                ? "bg-red-600 text-white"
                 : "text-slate-200 hover:bg-white/5"
             }`}
           >
@@ -112,7 +112,7 @@ export default function SideMenu({
                     }}
                     className={`flex w-full items-center justify-between gap-2 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
                       selectedCategory === cat.slug
-                        ? "bg-indigo-600 text-white"
+                        ? "bg-red-600 text-white"
                         : "text-slate-300 hover:bg-white/5 hover:text-white"
                     }`}
                   >

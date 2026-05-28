@@ -198,7 +198,7 @@ export default function PostPage({
                 <button
                   key={c.slug}
                   onClick={() => onSelectCategory(c.slug)}
-                  className="category-tag inline-flex items-center rounded-full border border-indigo-400/30 bg-indigo-500/10 px-3 py-1 text-xs font-medium text-indigo-200 backdrop-blur-xl transition-all hover:bg-indigo-500/20 hover:text-white"
+                  className="category-tag inline-flex items-center rounded-full border border-red-400/30 bg-red-500/10 px-3 py-1 text-xs font-medium text-indigo-200 backdrop-blur-xl transition-all hover:bg-red-500/20 hover:text-white"
                 >
                   {c.name}
                 </button>
@@ -241,7 +241,7 @@ export default function PostPage({
           <div ref={bodyRef}>
             {/* Rendered content */}
             <div
-              className="prose-body text-base leading-loose text-slate-300 [&_a]:text-indigo-400 [&_a:hover]:text-indigo-300 [&_strong]:text-white [&_b]:text-white [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white [&_h4]:text-white [&_h5]:text-white [&_p]:my-4 [&_p]:text-center [&_img]:mx-auto [&_img]:my-6 [&_img]:rounded-xl [&_img]:shadow-2xl [&_img]:max-w-full [&_img]:h-auto"
+              className="prose-body text-base leading-loose text-slate-300 [&_a]:text-red-400 [&_a:hover]:text-red-300 [&_strong]:text-white [&_b]:text-white [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white [&_h4]:text-white [&_h5]:text-white [&_p]:my-4 [&_p]:text-center [&_img]:mx-auto [&_img]:my-6 [&_img]:rounded-xl [&_img]:shadow-2xl [&_img]:max-w-full [&_img]:h-auto"
               dangerouslySetInnerHTML={{ __html: post.bodyHtml }}
             />
 
@@ -250,13 +250,13 @@ export default function PostPage({
 
             {/* Quick download links section — iOS glass */}
             {post.downloadLinks.length > 0 && (
-              <div className="mt-8 overflow-hidden rounded-3xl border border-white/15 bg-gradient-to-br from-indigo-500/15 via-fuchsia-500/10 to-cyan-500/10 p-5 shadow-xl backdrop-blur-2xl">
+              <div className="mt-8 overflow-hidden rounded-3xl border border-white/15 bg-gradient-to-br from-red-500/15 via-red-500/10 to-red-700/10 p-5 shadow-xl backdrop-blur-2xl">
                 <h3 className="mb-4 flex items-center gap-2 text-base font-bold text-white">
                   <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl border border-white/20 bg-white/10 backdrop-blur-xl">
                     <Download className="h-4 w-4 text-white" strokeWidth={2.5} />
                   </span>
                   Quick Download Links
-                  <Sparkles className="h-4 w-4 text-cyan-300" strokeWidth={2.2} />
+                  <Sparkles className="h-4 w-4 text-red-300" strokeWidth={2.2} />
                 </h3>
                 <div className="grid gap-2.5 sm:grid-cols-2">
                   {post.downloadLinks.slice(0, 20).map((link, i) => (
@@ -269,7 +269,7 @@ export default function PostPage({
                       className="group flex items-center justify-between gap-3 rounded-2xl border border-white/15 bg-white/[0.08] px-4 py-3 text-sm font-medium text-slate-100 shadow-sm backdrop-blur-xl transition-all hover:-translate-y-0.5 hover:border-white/30 hover:bg-white/[0.16] hover:shadow-lg active:scale-[0.98]"
                     >
                       <span className="flex min-w-0 items-center gap-2.5">
-                        <span className="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg border border-white/15 bg-white/10 text-cyan-200">
+                        <span className="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg border border-white/15 bg-white/10 text-white">
                           <Download className="h-3.5 w-3.5" strokeWidth={2.5} />
                         </span>
                         <span className="line-clamp-1">{link.label}</span>
@@ -290,7 +290,7 @@ export default function PostPage({
                     <button
                       key={c.slug}
                       onClick={() => onSelectCategory(c.slug)}
-                      className="inline-flex items-center rounded-md bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-200 transition-colors hover:bg-indigo-600 hover:text-white"
+                      className="inline-flex items-center rounded-md bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-200 transition-colors hover:bg-red-600 hover:text-white"
                     >
                       {c.name}
                     </button>

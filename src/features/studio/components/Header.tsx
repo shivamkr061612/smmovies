@@ -77,13 +77,13 @@ export default function Header({ searchValue, onSearch, onMenuClick, onLogoClick
             onSubmit={(e) => e.preventDefault()}
             className={`flex items-center gap-2 rounded-full border px-3.5 py-2 transition-all duration-300 sm:px-4 sm:py-2.5 ${
               focused
-                ? "border-indigo-400/60 bg-white/10 shadow-lg shadow-indigo-500/20"
+                ? "border-red-400/60 bg-white/10 shadow-lg shadow-red-500/20"
                 : "border-white/15 bg-white/[0.03] hover:border-white/25"
             }`}
           >
             <svg
               className={`search-icon h-4 w-4 flex-shrink-0 transition-colors sm:h-5 sm:w-5 ${
-                focused ? "text-indigo-400" : "text-slate-400"
+                focused ? "text-red-400" : "text-slate-400"
               }`}
               fill="none"
               viewBox="0 0 24 24"
