@@ -32,6 +32,45 @@ export default function PostPage({
   const [error, setError] = useState<string | null>(null);
   const bodyRef = useRef<HTMLDivElement | null>(null);
 
+  // Mdrive link generator modal
+  const [mdriveModal, setMdriveModal] = useState<{
+    open: boolean;
+    id: string;
+    title: string;
+    loading: boolean;
+    error: string | null;
+    links: { label: string; url: string }[];
+  }>({ open: false, id: "", title: "", loading: false, error: null, links: [] });
+
+  const openMdrive = useCallback(async (id: string, title: string) => {
+    setMdriveModal({ open: true, id, title, loading: true, error: null, links: [] });
+    try {
+      const links = await fetchMdriveLinks(id);
+      setMdriveModal((m) =>
+        m.id === id
+          ? {
+              ...m,
+              loading: false,
+              links,
+              error: links.length === 0 ? "No download mirrors found." : null,
+            }
+          : m
+      );
+    } catch (e) {
+      console.error(e);
+      setMdriveModal((m) =>
+        m.id === id
+          ? { ...m, loading: false, error: "Failed to generate links. Try again." }
+          : m
+      );
+    }
+  }, []);
+
+  const closeMdrive = useCallback(
+    () => setMdriveModal((m) => ({ ...m, open: false })),
+    []
+  );
+
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
