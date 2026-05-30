@@ -72,14 +72,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "SM Movies" },
+      { name: "description", content: "SM Movies is your ultimate entertainment hub to stream the latest movies, web series, anime, and TV shows in HD, Full HD, and 4K quality with a fast, smooth, an" },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "SM Movies" },
+      { property: "og:description", content: "SM Movies is your ultimate entertainment hub to stream the latest movies, web series, anime, and TV shows in HD, Full HD, and 4K quality with a fast, smooth, an" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "SM Movies" },
+      { name: "twitter:description", content: "SM Movies is your ultimate entertainment hub to stream the latest movies, web series, anime, and TV shows in HD, Full HD, and 4K quality with a fast, smooth, an" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/w8xs3lDkbLbQwdsPruhRTgX0ipj2/social-images/social-1780114995112-52131.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/w8xs3lDkbLbQwdsPruhRTgX0ipj2/social-images/social-1780114995112-52131.webp" },
     ],
     links: [
       {
