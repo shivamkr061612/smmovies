@@ -29,6 +29,6 @@ export interface PostContent {
   imageUrl: string;
   bodyHtml: string;
   categories: { name: string; slug: string }[];
-  downloadLinks: { label: string; url: string }[];
+  downloadLinks: { label: string; url: string; mdriveId?: string }[];
   screenshots: string[];
 }
