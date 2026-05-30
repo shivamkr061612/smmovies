@@ -316,7 +316,14 @@ export default function PostPage({
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      onClick={() => openSmartlink()}
+                      onClick={(e) => {
+                        if (link.mdriveId) {
+                          e.preventDefault();
+                          openMdrive(link.mdriveId, link.label);
+                          return;
+                        }
+                        openSmartlink();
+                      }}
                       className="group flex items-center justify-between gap-3 rounded-2xl border border-white/15 bg-white/[0.08] px-4 py-3 text-sm font-medium text-slate-100 shadow-sm backdrop-blur-xl transition-all hover:-translate-y-0.5 hover:border-white/30 hover:bg-white/[0.16] hover:shadow-lg active:scale-[0.98]"
                     >
                       <span className="flex min-w-0 items-center gap-2.5">
