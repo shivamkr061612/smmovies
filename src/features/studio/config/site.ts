@@ -30,8 +30,8 @@ export const SITE_BASE_URL =
   readConfig("scraperUrl") || readConfig("SITE_BASE_URL") || "https://new2.moviesdrives.my";
 
 // Site-level SEO values
-export const SITE_NAME = readConfig("siteName") || readConfig("SITE_NAME") || "MoviesDrive";
-export const SITE_TITLE = readConfig("siteTitle") || readConfig("SITE_TITLE") || "MoviesDrive — Download Latest Movies & Web Series in HD, 4K";
+export const SITE_NAME = readConfig("siteName") || readConfig("SITE_NAME") || "SM Movies";
+export const SITE_TITLE = readConfig("siteTitle") || readConfig("SITE_TITLE") || "SM Movies — Download Latest Movies & Web Series in HD, 4K";
 export const SITE_DESCRIPTION = readConfig("siteDescription") || readConfig("SITE_DESCRIPTION") || "Download latest Bollywood, Hollywood, South Indian movies and web series in 480p, 720p, 1080p and 4K quality.";
 export const SITE_LOGO = readConfig("logoUrl") || readConfig("SITE_LOGO") || "";
 

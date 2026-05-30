@@ -20,7 +20,7 @@ export default function Footer() {
                 </svg>
               </div>
               <span className="text-sm font-black text-white">
-                Movies<span className="text-red-600">Drive</span>
+                SM<span className="text-red-600"> Movies</span>
               </span>
             </>
           )}
