@@ -216,37 +216,59 @@ body::-webkit-scrollbar-thumb:hover {
   font-size: 1rem;
 }
 
-/* Poster card styling — black surface, white hairline, red hover glow */
+/* Poster card — glass surface, rounded, smooth hover */
 .poster-card {
-  background: #0a0a0a;
-  border-radius: 16px;
+  background: linear-gradient(160deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+  border-radius: 22px;
   border: 1px solid rgba(255,255,255,0.08);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.03);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.05);
   cursor: pointer;
   padding: 8px;
-  transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.25s ease;
+  transition: transform 0.45s cubic-bezier(.2,.8,.2,1), box-shadow 0.45s cubic-bezier(.2,.8,.2,1), border-color 0.3s ease, background 0.4s ease;
   overflow: hidden;
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  will-change: transform;
 }
 .poster-card img {
   display: block;
   width: 100%;
   height: auto;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
+  border-radius: 16px;
   object-fit: cover;
+  transition: transform 0.6s cubic-bezier(.2,.8,.2,1);
 }
 .poster-card .poster-meta {
-  padding: 8px 6px 6px 6px;
+  padding: 10px 8px 6px 8px;
 }
 .poster-card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(220, 38, 38, 0.55);
-  box-shadow: 0 18px 40px rgba(0,0,0,0.8), 0 0 24px rgba(220, 38, 38, 0.25);
+  transform: translateY(-8px) scale(1.015);
+  border-color: rgba(220, 38, 38, 0.5);
+  background: linear-gradient(160deg, rgba(255,255,255,0.06), rgba(220,38,38,0.04));
+  box-shadow: 0 22px 50px rgba(0,0,0,0.8), 0 0 30px rgba(220, 38, 38, 0.28);
+}
+.poster-card:hover img {
+  transform: scale(1.04);
 }
 
-/* If you want a portrait-only variant */
-.poster-card.portrait {
-  width: 160px;
+/* Smooth global transitions for interactive elements */
+button, a {
+  transition: color 0.25s ease, background-color 0.25s ease, border-color 0.25s ease, transform 0.25s ease, box-shadow 0.3s ease, opacity 0.25s ease;
+}
+
+/* Reusable glass surface */
+.glass {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border-radius: 18px;
+}
+.glass-hover:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(220,38,38,0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(220,38,38,0.18);
 }
 
 /* Mobile menu backdrop and panel custom styling */
