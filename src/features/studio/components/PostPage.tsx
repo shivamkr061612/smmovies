@@ -374,6 +374,80 @@ export default function PostPage({
           </div>
         )}
       </main>
+
+      {/* Mdrive link generator modal — iOS glass */}
+      {mdriveModal.open && (
+        <div
+          className="fixed inset-0 z-[100] flex items-end justify-center bg-black/70 p-0 backdrop-blur-md sm:items-center sm:p-4"
+          onClick={closeMdrive}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-lg overflow-hidden rounded-t-3xl border border-white/15 bg-gradient-to-br from-zinc-900/95 via-zinc-900/90 to-black/95 shadow-2xl ring-1 ring-white/10 backdrop-blur-2xl sm:rounded-3xl"
+          >
+            <div className="flex items-center gap-3 border-b border-white/10 px-5 py-4">
+              <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/15 bg-gradient-to-br from-red-500/30 to-red-700/20">
+                <LinkIcon className="h-4 w-4 text-white" strokeWidth={2.5} />
+              </span>
+              <div className="min-w-0 flex-1">
+                <h3 className="text-sm font-bold text-white">Download Links</h3>
+                <p className="line-clamp-1 text-xs text-slate-400">{mdriveModal.title}</p>
+              </div>
+              <button
+                onClick={closeMdrive}
+                className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-300 transition-all hover:bg-white/15 hover:text-white active:scale-95"
+                aria-label="Close"
+              >
+                <X className="h-4 w-4" strokeWidth={2.5} />
+              </button>
+            </div>
+
+            <div className="max-h-[60vh] overflow-y-auto p-5">
+              {mdriveModal.loading && (
+                <div className="flex flex-col items-center justify-center gap-3 py-10 text-slate-300">
+                  <Loader2 className="h-7 w-7 animate-spin text-red-400" strokeWidth={2.2} />
+                  <p className="text-sm">Generating download links…</p>
+                </div>
+              )}
+
+              {!mdriveModal.loading && mdriveModal.error && (
+                <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-4 text-center">
+                  <p className="text-sm text-red-300">{mdriveModal.error}</p>
+                  <button
+                    onClick={() => openMdrive(mdriveModal.id, mdriveModal.title)}
+                    className="mt-3 rounded-full border border-red-400/30 bg-red-500/10 px-4 py-1.5 text-xs font-medium text-red-200 hover:bg-red-500/20"
+                  >
+                    Retry
+                  </button>
+                </div>
+              )}
+
+              {!mdriveModal.loading && !mdriveModal.error && mdriveModal.links.length > 0 && (
+                <div className="grid gap-2.5">
+                  {mdriveModal.links.map((l, i) => (
+                    <a
+                      key={i}
+                      href={l.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => openSmartlink()}
+                      className="group flex items-center justify-between gap-3 rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-sm font-medium text-white shadow-sm backdrop-blur-xl transition-all hover:-translate-y-0.5 hover:border-white/30 hover:bg-white/[0.14] hover:shadow-lg active:scale-[0.98]"
+                    >
+                      <span className="flex min-w-0 items-center gap-2.5">
+                        <span className="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg border border-white/15 bg-gradient-to-br from-red-500/30 to-red-700/20">
+                          <Download className="h-3.5 w-3.5 text-white" strokeWidth={2.5} />
+                        </span>
+                        <span className="line-clamp-1">{l.label}</span>
+                      </span>
+                      <ArrowRight className="h-4 w-4 flex-shrink-0 text-white/60 transition-transform group-hover:translate-x-0.5 group-hover:text-white" strokeWidth={2.2} />
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </article>
   );
 }
