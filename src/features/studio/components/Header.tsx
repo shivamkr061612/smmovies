@@ -62,9 +62,9 @@ export default function Header({ searchValue, onSearch, onMenuClick, onLogoClick
                 </div>
                 <span className="absolute -right-1 -top-1 text-yellow-400 text-sm">⚡</span>
               </div>
-              <div className="flex items-baseline">
-                <span className="text-base font-black tracking-tight text-white sm:text-lg">{(SITE_NAME || 'MoviesDrive').split(' ')[0]}</span>
-                <span className="text-base font-black tracking-tight text-red-600 sm:text-lg">{(SITE_NAME || 'MoviesDrive').split(' ')[1] || ''}</span>
+              <div className="flex items-baseline gap-1">
+                <span className="text-base font-black tracking-tight text-white sm:text-lg">{(SITE_NAME || 'SM Movies').split(' ')[0]}</span>
+                <span className="text-base font-black tracking-tight text-red-600 sm:text-lg">{(SITE_NAME || 'SM Movies').split(' ').slice(1).join(' ')}</span>
               </div>
             </div>
           )}

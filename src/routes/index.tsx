@@ -5,7 +5,7 @@ import StudioApp from "@/features/studio/StudioApp";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "MoviesDrive — Download Latest Movies & Web Series in HD, 4K" },
+      { title: "SM Movies — Download Latest Movies & Web Series in HD, 4K" },
       { name: "description", content: "Download latest Bollywood, Hollywood, South Indian movies and web series in 480p, 720p, 1080p and 4K quality." },
       { name: "theme-color", content: "#000000" },
     ],
