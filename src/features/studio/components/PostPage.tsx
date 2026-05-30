@@ -160,21 +160,33 @@ export default function PostPage({
     }
   }, [post]);
 
-  // Intercept clicks on any link inside the scraped post body and on the
-  // quick-download buttons so each click also opens the smartlink ad.
+  // Intercept clicks inside the scraped body — open mdrive modal instead of
+  // navigating to mdrive.lol. Other links keep their default behavior.
   useEffect(() => {
     const el = bodyRef.current;
     if (!el) return;
     const onClick = (e: MouseEvent) => {
       const target = (e.target as HTMLElement | null)?.closest("a");
       if (!target) return;
-      const href = target.getAttribute("href");
+      const href = target.getAttribute("href") || "";
       if (!href || href.startsWith("#")) return;
+
+      const mdriveId =
+        target.getAttribute("data-mdrive-id") ||
+        href.match(/mdrive\.lol\/(?:archive|\?p=)\/?(\d+)/i)?.[1] ||
+        "";
+      if (mdriveId) {
+        e.preventDefault();
+        e.stopPropagation();
+        const label = (target.textContent || "").trim() || "Download";
+        openMdrive(mdriveId, label);
+        return;
+      }
       openSmartlink();
     };
     el.addEventListener("click", onClick);
     return () => el.removeEventListener("click", onClick);
-  }, [post]);
+  }, [post, openMdrive]);
 
   const displayTitle = post?.title || fallbackTitle || "Loading...";
   const displayImage = post?.imageUrl || fallbackImage || "";
