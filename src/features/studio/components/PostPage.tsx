@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { ArrowLeft, Share2, Calendar, Download, ArrowRight, Sparkles, X, Loader2, Link as LinkIcon } from "lucide-react";
 import { fetchPostContent, fetchMdriveLinks, slugToPath } from "../services/scraper";
 import { POST_LOGOS_TOP, POST_LOGOS_BOTTOM, SITE_BASE_URL, SITE_TITLE, SITE_DESCRIPTION, SITE_LOGO } from "../config/site";
@@ -184,8 +185,8 @@ export default function PostPage({
       }
       openSmartlink();
     };
-    el.addEventListener("click", onClick);
-    return () => el.removeEventListener("click", onClick);
+    el.addEventListener("click", onClick, true);
+    return () => el.removeEventListener("click", onClick, true);
   }, [post, openMdrive]);
 
   const displayTitle = post?.title || fallbackTitle || "Loading...";
@@ -376,9 +377,9 @@ export default function PostPage({
       </main>
 
       {/* Mdrive link generator modal — iOS glass */}
-      {mdriveModal.open && (
+      {mdriveModal.open && typeof document !== "undefined" && createPortal(
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4 backdrop-blur-md"
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 p-4 backdrop-blur-md"
           onClick={closeMdrive}
         >
           <div
@@ -446,7 +447,8 @@ export default function PostPage({
               )}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </article>
   );
