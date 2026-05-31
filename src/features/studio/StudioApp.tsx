@@ -311,19 +311,19 @@ export default function App() {
 
             {/* Status */}
             {loading && (
-              <div className="flex items-center gap-2 text-sm text-slate-400">
-                <span className="h-3 w-3 animate-spin rounded-full border-2 border-red-500 border-r-transparent" />
-                Loading...
+              <div className="flex items-center gap-2 text-sm font-medium text-zinc-400">
+                <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-amber-400 border-r-transparent" />
+                Loading latest releases...
               </div>
             )}
 
             {/* Error */}
             {error && !loading && (
-              <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-6 text-center">
-                <p className="text-sm text-red-300">{error}</p>
+              <div className="rounded-2xl border border-amber-500/20 bg-amber-500/[0.04] p-6 text-center">
+                <p className="text-sm text-amber-200">{error}</p>
                 <button
                   onClick={() => fetchData(currentPage, selectedCategory, searchQuery)}
-                  className="mt-3 rounded-lg bg-red-500/10 px-4 py-2 text-sm font-medium text-red-300 ring-1 ring-red-500/20 transition-colors hover:bg-red-500/20"
+                  className="mt-3 rounded-xl bg-gradient-to-r from-amber-500 to-fuchsia-600 px-5 py-2 text-sm font-bold text-white shadow-lg shadow-amber-500/30 transition-all hover:scale-105"
                 >
                   Retry
                 </button>
@@ -332,7 +332,7 @@ export default function App() {
 
             {/* Movies grid */}
             {!error && (
-              <div className="movies-grid grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
                 {loading
                   ? Array.from({ length: 12 }).map((_, i) => <SkeletonCard key={i} />)
                   : movies.map((movie) => (
@@ -349,17 +349,18 @@ export default function App() {
             {/* Empty state */}
             {!loading && !error && movies.length === 0 && (
               <div className="py-20 text-center">
-                <div className="mx-auto mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-slate-800/50 text-4xl">
-                  🎞️
+                <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500/15 to-fuchsia-500/10 text-4xl ring-1 ring-amber-400/20">
+                  🎬
                 </div>
-                <h3 className="text-lg font-semibold text-slate-300">No movies found</h3>
-                <p className="mt-2 text-sm text-slate-500">
+                <h3 className="text-lg font-black text-white">Nothing here</h3>
+                <p className="mt-2 text-sm text-zinc-500">
                   {searchQuery
                     ? "Try a different search term."
                     : "Try a different category or check back later."}
                 </p>
               </div>
             )}
+
 
             {/* Pagination */}
             {showPagination && !loading && (
