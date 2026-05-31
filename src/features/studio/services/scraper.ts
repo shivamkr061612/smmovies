@@ -223,10 +223,27 @@ export async function fetchPostContent(slug: string): Promise<PostContent> {
   const doc = parser.parseFromString(`<div id="root">${rendered}</div>`, "text/html");
   const root = doc.getElementById("root")!;
 
-  // Remove ads/scripts
+  // Remove ads/scripts — but KEEP iframes (trailers/youtube)
   root
-    .querySelectorAll("script, style, iframe, ins, .ads, .ad, [class*='advert']")
+    .querySelectorAll("script, style, ins, .ads, .ad, [class*='advert']")
     .forEach((el) => el.remove());
+
+  // Keep only safe iframes (youtube, vimeo, dailymotion) — strip others
+  root.querySelectorAll("iframe").forEach((f) => {
+    const src = (f.getAttribute("src") || "").toLowerCase();
+    const safe = /youtube\.com|youtu\.be|youtube-nocookie|vimeo\.com|dailymotion/.test(src);
+    if (!safe) {
+      f.remove();
+      return;
+    }
+    // Make responsive
+    f.setAttribute("loading", "lazy");
+    f.setAttribute("allowfullscreen", "true");
+    f.setAttribute("frameborder", "0");
+    f.removeAttribute("width");
+    f.removeAttribute("height");
+    f.setAttribute("class", "movie-trailer-iframe");
+  });
 
   // Rewrite all Telegram links to our own group
   const TELEGRAM_URL = "https://t.me/+FSWElNbfXwdjYWNl";
