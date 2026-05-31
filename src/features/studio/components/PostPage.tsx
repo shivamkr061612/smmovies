@@ -378,12 +378,12 @@ export default function PostPage({
       {/* Mdrive link generator modal — iOS glass */}
       {mdriveModal.open && (
         <div
-          className="fixed inset-0 z-[100] flex items-end justify-center bg-black/70 p-0 backdrop-blur-md sm:items-center sm:p-4"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4 backdrop-blur-md"
           onClick={closeMdrive}
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-lg overflow-hidden rounded-t-3xl border border-white/15 bg-gradient-to-br from-zinc-900/95 via-zinc-900/90 to-black/95 shadow-2xl ring-1 ring-white/10 backdrop-blur-2xl sm:rounded-3xl"
+            className="w-full max-w-lg overflow-hidden rounded-3xl border border-white/15 bg-gradient-to-br from-zinc-900/95 via-zinc-900/90 to-black/95 shadow-2xl ring-1 ring-white/10 backdrop-blur-2xl"
           >
             <div className="flex items-center gap-3 border-b border-white/10 px-5 py-4">
               <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/15 bg-gradient-to-br from-red-500/30 to-red-700/20">

@@ -228,6 +228,22 @@ export async function fetchPostContent(slug: string): Promise<PostContent> {
     .querySelectorAll("script, style, iframe, ins, .ads, .ad, [class*='advert']")
     .forEach((el) => el.remove());
 
+  // Rewrite all Telegram links to our own group
+  const TELEGRAM_URL = "https://t.me/+FSWElNbfXwdjYWNl";
+  root.querySelectorAll("a[href]").forEach((a) => {
+    const href = (a.getAttribute("href") || "").toLowerCase();
+    if (
+      href.includes("t.me/") ||
+      href.includes("telegram.me/") ||
+      href.includes("telegram.dog/") ||
+      href.includes("//telegram.")
+    ) {
+      a.setAttribute("href", TELEGRAM_URL);
+      a.setAttribute("target", "_blank");
+      a.setAttribute("rel", "noopener noreferrer");
+    }
+  });
+
   // Extract images
   let imageUrl = featured;
   const screenshots: string[] = [];
