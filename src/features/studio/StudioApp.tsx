@@ -240,12 +240,12 @@ export default function App() {
     : "Latest Releases";
 
   return (
-    <div className="min-h-screen bg-black">
-      {/* Decorative red background glows */}
+    <div className="min-h-screen bg-zinc-950">
+      {/* Decorative amber/violet glows */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute -top-40 left-1/2 -translate-x-1/2 rounded-full bg-red-700/15 blur-[80px] h-[180px] w-[180px] sm:h-[320px] sm:w-[320px] md:h-[500px] md:w-[500px]" />
-        <div className="absolute top-1/3 right-0 translate-x-1/3 rounded-full bg-red-600/10 blur-[80px] h-[140px] w-[140px] sm:h-[280px] sm:w-[280px] md:h-[400px] md:w-[400px]" />
-        <div className="absolute bottom-0 left-0 -translate-x-1/3 rounded-full bg-red-800/10 blur-[100px] h-[140px] w-[140px] sm:h-[280px] sm:w-[280px] md:h-[400px] md:w-[400px]" />
+        <div className="absolute -top-40 left-1/4 -translate-x-1/2 rounded-full bg-amber-500/15 blur-[100px] h-[200px] w-[200px] sm:h-[380px] sm:w-[380px] md:h-[560px] md:w-[560px]" />
+        <div className="absolute top-1/3 right-0 translate-x-1/3 rounded-full bg-fuchsia-600/12 blur-[100px] h-[180px] w-[180px] sm:h-[320px] sm:w-[320px] md:h-[460px] md:w-[460px]" />
+        <div className="absolute bottom-0 left-0 -translate-x-1/3 rounded-full bg-violet-700/10 blur-[120px] h-[180px] w-[180px] sm:h-[320px] sm:w-[320px] md:h-[460px] md:w-[460px]" />
       </div>
 
       <Header
@@ -253,6 +253,9 @@ export default function App() {
         onSearch={setPendingSearch}
         onMenuClick={() => setMenuOpen(true)}
         onLogoClick={handleHome}
+        categories={categories}
+        selectedCategory={selectedCategory}
+        onSelectCategory={handleSelectCategory}
       />
 
       <SideMenu
@@ -264,7 +267,7 @@ export default function App() {
         onHome={handleHome}
       />
 
-      <main className="relative mx-auto max-w-7xl space-y-5 px-3 py-4 sm:space-y-6 sm:px-4 sm:py-6">
+      <main className="relative mx-auto max-w-7xl space-y-6 px-3 py-4 sm:space-y-7 sm:px-5 sm:py-6">
         {view.type === "post" ? (
             <PostPage
               slug={view.slug}
@@ -276,7 +279,7 @@ export default function App() {
             />
         ) : (
           <div className="lg:flex lg:gap-6">
-            <div className="min-w-0 flex-1 space-y-5 sm:space-y-6">
+            <div className="min-w-0 flex-1 space-y-6 sm:space-y-7">
             {/* Hero slider only on home page 1 */}
             {showHero && !loading && movies.length > 0 && (
               <HeroSlider movies={movies} onOpenMovie={handleOpenMovie} />
@@ -289,13 +292,18 @@ export default function App() {
             {showNotice && <NoticeBanner />}
 
             {/* Section heading */}
-            <div className="flex items-center justify-between gap-3 px-1 pt-2">
-              <h2 className="flex items-center gap-2 text-xl font-extrabold text-white sm:text-2xl">
-                <span className="text-2xl sm:text-3xl">🔥</span>
-                {listHeading}
-              </h2>
+            <div className="flex items-end justify-between gap-3 px-1 pt-2">
+              <div>
+                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-amber-400">
+                  <span className="inline-block h-2 w-2 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(245,158,11,0.9)]" />
+                  Trending
+                </div>
+                <h2 className="mt-1 text-2xl font-black leading-tight text-white sm:text-3xl">
+                  {listHeading}
+                </h2>
+              </div>
               {view.type === "list" && !searchQuery && (
-                <span className="text-xs font-medium text-slate-400 sm:text-sm">
+                <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-bold text-zinc-300">
                   Page {currentPage}
                 </span>
               )}
