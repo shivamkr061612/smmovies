@@ -27,7 +27,7 @@ const readConfig = (key: string, altKey?: string) => {
 
 // Base URL of the source site used by the scraper (no trailing slash)
 export const SITE_BASE_URL =
-  readConfig("scraperUrl") || readConfig("SITE_BASE_URL") || "https://new2.moviesdrives.my";
+  readConfig("scraperUrl") || readConfig("SITE_BASE_URL") || "https://new3.moviesdrives.my";
 
 // Site-level SEO values
 export const SITE_NAME = readConfig("siteName") || readConfig("SITE_NAME") || "SM Movies";

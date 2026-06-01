@@ -1,5 +1,3 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
-
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
@@ -18,51 +16,63 @@ export default function Pagination({
   const getPageNumbers = (): (number | "...")[] => {
     const pages: (number | "...")[] = [];
     const maxVisible = 5;
+
     if (totalPages <= maxVisible + 2) {
       for (let i = 1; i <= totalPages; i++) pages.push(i);
     } else {
       pages.push(1);
       if (currentPage > 3) pages.push("...");
+
       const start = Math.max(2, currentPage - 1);
       const end = Math.min(totalPages - 1, currentPage + 1);
+
       for (let i = start; i <= end; i++) pages.push(i);
+
       if (currentPage < totalPages - 2) pages.push("...");
       pages.push(totalPages);
     }
+
     return pages;
   };
 
   const pageNumbers = getPageNumbers();
 
   return (
-    <nav className="flex items-center justify-center gap-2 py-6" aria-label="Pagination">
+    <nav className="pagination flex items-center justify-center gap-2 py-4" aria-label="Pagination">
+      {/* Prev button */}
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={!hasPrev}
-        aria-label="Previous page"
-        className={`flex h-10 w-10 items-center justify-center rounded-xl border text-sm font-bold transition-all ${
+        className={`page-btn prev-btn flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-sm font-semibold transition-all duration-300 ${
           hasPrev
-            ? "border-white/10 bg-white/[0.04] text-zinc-200 hover:border-amber-400/40 hover:bg-amber-500/15 hover:text-amber-300 active:scale-90"
-            : "cursor-not-allowed border-white/5 text-zinc-700 opacity-40"
+            ? "bg-white/5 text-slate-200 hover:bg-red-600 hover:text-white hover:shadow-lg active:scale-95"
+            : "cursor-not-allowed text-slate-600 opacity-40"
         }`}
       >
-        <ChevronLeft className="h-4 w-4" strokeWidth={2.5} />
+        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15 18L9 12l6-6" />
+        </svg>
+      
       </button>
 
-      <div className="flex items-center gap-1.5">
+      {/* page-numbers container */}
+      <div className="page-numbers flex items-center gap-1.5">
         {pageNumbers.map((page, idx) =>
           page === "..." ? (
-            <span key={`d-${idx}`} className="px-1 text-sm font-bold text-zinc-600">
-              ···
+            <span
+              key={`dots-${idx}`}
+              className="page-dots px-2 py-2.5 text-sm text-slate-500 font-medium"
+            >
+              ...
             </span>
           ) : (
             <button
               key={page}
               onClick={() => onPageChange(page)}
-              className={`flex h-10 min-w-[40px] items-center justify-center rounded-xl px-3 text-sm font-black transition-all ${
+              className={`page-num min-w-[36px] rounded-xl px-3 py-2 text-sm font-semibold transition-all duration-300 ${
                 page === currentPage
-                  ? "bg-gradient-to-br from-amber-400 to-fuchsia-600 text-white shadow-lg shadow-amber-500/40 scale-110 ring-1 ring-amber-300/50"
-                  : "border border-white/10 bg-white/[0.04] text-zinc-300 hover:border-amber-400/30 hover:bg-amber-500/10 hover:text-amber-300"
+                  ? "page-num active bg-gradient-to-r from-red-600 to-red-600 text-white shadow-lg shadow-red-500/30 scale-105 ring-2 ring-red-400/35"
+                  : "bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white hover:shadow-md"
               }`}
             >
               {page}
@@ -71,17 +81,20 @@ export default function Pagination({
         )}
       </div>
 
+      {/* Next button */}
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={!hasNext}
-        aria-label="Next page"
-        className={`flex h-10 w-10 items-center justify-center rounded-xl border text-sm font-bold transition-all ${
+        className={`page-btn next-btn flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-sm font-semibold transition-all duration-300 ${
           hasNext
-            ? "border-white/10 bg-white/[0.04] text-zinc-200 hover:border-amber-400/40 hover:bg-amber-500/15 hover:text-amber-300 active:scale-90"
-            : "cursor-not-allowed border-white/5 text-zinc-700 opacity-40"
+            ? "bg-white/5 text-slate-200 hover:bg-red-600 hover:text-white hover:shadow-lg active:scale-95"
+            : "cursor-not-allowed text-slate-600 opacity-40"
         }`}
       >
-        <ChevronRight className="h-4 w-4" strokeWidth={2.5} />
+        
+        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6" />
+        </svg>
       </button>
     </nav>
   );
