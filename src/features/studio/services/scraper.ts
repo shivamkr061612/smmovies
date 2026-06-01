@@ -403,3 +403,99 @@ export const DEFAULT_CATEGORIES: Category[] = [
 ];
 
 export const CATEGORIES = DEFAULT_CATEGORIES;
+
+// ---------------------------------------------------------------------------
+// mdrive.lol link resolver
+// Given an mdrive.lol URL (with `?p=ID` or a slug), call the WP REST API,
+// extract the real download targets (hubcloud / gdflix / etc.) from the
+// post's `content.rendered` and return them.
+// ---------------------------------------------------------------------------
+
+const MDRIVE_API = "https://mdrive.lol/wp-json/wp/v2/posts";
+
+async function fetchJsonWithFallback(url: string): Promise<any> {
+  // Try direct first (mdrive.lol WP REST usually allows CORS), then proxies.
+  try {
+    const res = await fetch(url, { headers: { Accept: "application/json" } });
+    if (res.ok) return await res.json();
+  } catch {
+    /* ignore, try proxies */
+  }
+  for (let i = 0; i < PROXIES.length; i++) {
+    try {
+      const res = await fetch(PROXIES[i](url), {
+        headers: { Accept: "application/json" },
+      });
+      if (!res.ok) continue;
+      const text = await res.text();
+      try {
+        return JSON.parse(text);
+      } catch {
+        continue;
+      }
+    } catch {
+      /* try next */
+    }
+  }
+  throw new Error("Failed to fetch mdrive API");
+}
+
+async function getMdrivePostId(mdriveUrl: string): Promise<string | null> {
+  try {
+    const u = new URL(mdriveUrl);
+    if (!/mdrive\.lol$/i.test(u.hostname) && !u.hostname.includes("mdrive.lol")) {
+      return null;
+    }
+    const qid = u.searchParams.get("p");
+    if (qid && /^\d+$/.test(qid)) return qid;
+
+    // Slug-based: take last non-empty path segment
+    const parts = u.pathname.split("/").filter(Boolean);
+    const slug = parts[parts.length - 1];
+    if (!slug) return null;
+
+    const data = await fetchJsonWithFallback(
+      `${MDRIVE_API}?slug=${encodeURIComponent(slug)}`
+    );
+    if (Array.isArray(data) && data[0]?.id != null) return String(data[0].id);
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+export async function resolveMdriveLink(mdriveUrl: string): Promise<string[]> {
+  const id = await getMdrivePostId(mdriveUrl);
+  if (!id) return [];
+  try {
+    const data = await fetchJsonWithFallback(`${MDRIVE_API}/${id}`);
+    const html: string =
+      data?.content?.rendered || data?.content || data?.excerpt?.rendered || "";
+    if (!html) return [];
+    const re = /https?:\/\/(?:hubcloud|gdflix|gdtot|gdmirror|filepress|mdrive\.mom|fast-dl|sdrive)[^\s"'<>)]+/gi;
+    const matches = html.match(re) || [];
+    // Dedupe, keep order
+    const seen = new Set<string>();
+    const out: string[] = [];
+    for (const m of matches) {
+      const clean = m.replace(/[.,);]+$/, "");
+      if (!seen.has(clean)) {
+        seen.add(clean);
+        out.push(clean);
+      }
+    }
+    return out;
+  } catch (e) {
+    console.warn("resolveMdriveLink failed", e);
+    return [];
+  }
+}
+
+export function isMdriveLink(url: string): boolean {
+  try {
+    return new URL(url).hostname.includes("mdrive.lol");
+  } catch {
+    return false;
+  }
+}
+

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Share2, Calendar, Download, ArrowRight, Sparkles } from "lucide-react";
-import { fetchPostContent, slugToPath } from "../services/scraper";
+import { fetchPostContent, slugToPath, resolveMdriveLink, isMdriveLink } from "../services/scraper";
 import { POST_LOGOS_TOP, POST_LOGOS_BOTTOM, SITE_BASE_URL, SITE_TITLE, SITE_DESCRIPTION, SITE_LOGO } from "../config/site";
 import type { PostContent } from "../types";
 import {
@@ -31,6 +31,8 @@ export default function PostPage({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const bodyRef = useRef<HTMLDivElement | null>(null);
+  const [resolving, setResolving] = useState<string | null>(null);
+  const [resolveError, setResolveError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -121,8 +123,9 @@ export default function PostPage({
     }
   }, [post]);
 
-  // Intercept clicks on any link inside the scraped post body and on the
-  // quick-download buttons so each click also opens the smartlink ad.
+  // Intercept clicks on any link inside the scraped post body. For mdrive.lol
+  // links we resolve the real download URL through the WP REST API and open
+  // that instead of redirecting the user through mdrive.lol.
   useEffect(() => {
     const el = bodyRef.current;
     if (!el) return;
@@ -131,11 +134,39 @@ export default function PostPage({
       if (!target) return;
       const href = target.getAttribute("href");
       if (!href || href.startsWith("#")) return;
+      if (isMdriveLink(href)) {
+        e.preventDefault();
+        e.stopPropagation();
+        handleMdriveClick(href, target.textContent?.trim() || "Download");
+        return;
+      }
       openSmartlink();
     };
-    el.addEventListener("click", onClick);
-    return () => el.removeEventListener("click", onClick);
+    el.addEventListener("click", onClick, true);
+    return () => el.removeEventListener("click", onClick, true);
   }, [post]);
+
+  async function handleMdriveClick(url: string, label: string) {
+    if (resolving) return;
+    setResolveError(null);
+    setResolving(label);
+    try {
+      openSmartlink();
+      const links = await resolveMdriveLink(url);
+      if (links.length === 0) {
+        setResolveError(
+          "Could not generate a direct link for this option. Please try another."
+        );
+        return;
+      }
+      window.open(links[0], "_blank", "noopener,noreferrer");
+    } catch (err) {
+      console.error(err);
+      setResolveError("Failed to generate download link. Please try again.");
+    } finally {
+      setResolving(null);
+    }
+  }
 
   const displayTitle = post?.title || fallbackTitle || "Loading...";
   const displayImage = post?.imageUrl || fallbackImage || "";
@@ -258,25 +289,54 @@ export default function PostPage({
                   Quick Download Links
                   <Sparkles className="h-4 w-4 text-red-300" strokeWidth={2.2} />
                 </h3>
+                {(resolving || resolveError) && (
+                  <div
+                    className={`mb-3 rounded-xl border px-3 py-2 text-xs ${
+                      resolveError
+                        ? "border-red-400/30 bg-red-500/10 text-red-200"
+                        : "border-white/20 bg-white/10 text-white"
+                    }`}
+                  >
+                    {resolveError
+                      ? resolveError
+                      : `Generating direct link for ${resolving}…`}
+                  </div>
+                )}
                 <div className="grid gap-2.5 sm:grid-cols-2">
-                  {post.downloadLinks.slice(0, 20).map((link, i) => (
-                    <a
-                      key={i}
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => openSmartlink()}
-                      className="group flex items-center justify-between gap-3 rounded-2xl border border-white/15 bg-white/[0.08] px-4 py-3 text-sm font-medium text-slate-100 shadow-sm backdrop-blur-xl transition-all hover:-translate-y-0.5 hover:border-white/30 hover:bg-white/[0.16] hover:shadow-lg active:scale-[0.98]"
-                    >
-                      <span className="flex min-w-0 items-center gap-2.5">
-                        <span className="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg border border-white/15 bg-white/10 text-white">
-                          <Download className="h-3.5 w-3.5" strokeWidth={2.5} />
+                  {post.downloadLinks.slice(0, 20).map((link, i) => {
+                    const mdrive = isMdriveLink(link.url);
+                    const isLoading = resolving === link.label;
+                    return (
+                      <a
+                        key={i}
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => {
+                          if (mdrive) {
+                            e.preventDefault();
+                            handleMdriveClick(link.url, link.label);
+                          } else {
+                            openSmartlink();
+                          }
+                        }}
+                        aria-busy={isLoading}
+                        className={`group flex items-center justify-between gap-3 rounded-2xl border border-white/15 bg-white/[0.08] px-4 py-3 text-sm font-medium text-slate-100 shadow-sm backdrop-blur-xl transition-all hover:-translate-y-0.5 hover:border-white/30 hover:bg-white/[0.16] hover:shadow-lg active:scale-[0.98] ${
+                          isLoading ? "pointer-events-none opacity-70" : ""
+                        }`}
+                      >
+                        <span className="flex min-w-0 items-center gap-2.5">
+                          <span className="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg border border-white/15 bg-white/10 text-white">
+                            <Download className="h-3.5 w-3.5" strokeWidth={2.5} />
+                          </span>
+                          <span className="line-clamp-1">
+                            {isLoading ? "Generating…" : link.label}
+                          </span>
                         </span>
-                        <span className="line-clamp-1">{link.label}</span>
-                      </span>
-                      <ArrowRight className="h-4 w-4 flex-shrink-0 text-white/60 transition-transform group-hover:translate-x-0.5 group-hover:text-white" strokeWidth={2.2} />
-                    </a>
-                  ))}
+                        <ArrowRight className="h-4 w-4 flex-shrink-0 text-white/60 transition-transform group-hover:translate-x-0.5 group-hover:text-white" strokeWidth={2.2} />
+                      </a>
+                    );
+                  })}
                 </div>
               </div>
             )}
