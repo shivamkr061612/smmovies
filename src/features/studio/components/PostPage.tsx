@@ -1,7 +1,6 @@
-import { useState, useEffect, useRef, useCallback } from "react";
-import { createPortal } from "react-dom";
-import { ArrowLeft, Share2, Calendar, Download, ArrowRight, Sparkles, X, Loader2, Link as LinkIcon } from "lucide-react";
-import { fetchPostContent, fetchMdriveLinks, slugToPath } from "../services/scraper";
+import { useState, useEffect, useRef } from "react";
+import { ArrowLeft, Share2, Calendar, Download, ArrowRight, Sparkles } from "lucide-react";
+import { fetchPostContent, slugToPath } from "../services/scraper";
 import { POST_LOGOS_TOP, POST_LOGOS_BOTTOM, SITE_BASE_URL, SITE_TITLE, SITE_DESCRIPTION, SITE_LOGO } from "../config/site";
 import type { PostContent } from "../types";
 import {
@@ -32,45 +31,6 @@ export default function PostPage({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const bodyRef = useRef<HTMLDivElement | null>(null);
-
-  // Mdrive link generator modal
-  const [mdriveModal, setMdriveModal] = useState<{
-    open: boolean;
-    id: string;
-    title: string;
-    loading: boolean;
-    error: string | null;
-    links: { label: string; url: string }[];
-  }>({ open: false, id: "", title: "", loading: false, error: null, links: [] });
-
-  const openMdrive = useCallback(async (id: string, title: string) => {
-    setMdriveModal({ open: true, id, title, loading: true, error: null, links: [] });
-    try {
-      const links = await fetchMdriveLinks(id);
-      setMdriveModal((m) =>
-        m.id === id
-          ? {
-              ...m,
-              loading: false,
-              links,
-              error: links.length === 0 ? "No download mirrors found." : null,
-            }
-          : m
-      );
-    } catch (e) {
-      console.error(e);
-      setMdriveModal((m) =>
-        m.id === id
-          ? { ...m, loading: false, error: "Failed to generate links. Try again." }
-          : m
-      );
-    }
-  }, []);
-
-  const closeMdrive = useCallback(
-    () => setMdriveModal((m) => ({ ...m, open: false })),
-    []
-  );
 
   useEffect(() => {
     let cancelled = false;
@@ -161,33 +121,21 @@ export default function PostPage({
     }
   }, [post]);
 
-  // Intercept clicks inside the scraped body — open mdrive modal instead of
-  // navigating to mdrive.lol. Other links keep their default behavior.
+  // Intercept clicks on any link inside the scraped post body and on the
+  // quick-download buttons so each click also opens the smartlink ad.
   useEffect(() => {
     const el = bodyRef.current;
     if (!el) return;
     const onClick = (e: MouseEvent) => {
       const target = (e.target as HTMLElement | null)?.closest("a");
       if (!target) return;
-      const href = target.getAttribute("href") || "";
+      const href = target.getAttribute("href");
       if (!href || href.startsWith("#")) return;
-
-      const mdriveId =
-        target.getAttribute("data-mdrive-id") ||
-        href.match(/mdrive\.lol\/(?:archive|\?p=)\/?(\d+)/i)?.[1] ||
-        "";
-      if (mdriveId) {
-        e.preventDefault();
-        e.stopPropagation();
-        const label = (target.textContent || "").trim() || "Download";
-        openMdrive(mdriveId, label);
-        return;
-      }
       openSmartlink();
     };
-    el.addEventListener("click", onClick, true);
-    return () => el.removeEventListener("click", onClick, true);
-  }, [post, openMdrive]);
+    el.addEventListener("click", onClick);
+    return () => el.removeEventListener("click", onClick);
+  }, [post]);
 
   const displayTitle = post?.title || fallbackTitle || "Loading...";
   const displayImage = post?.imageUrl || fallbackImage || "";
@@ -317,14 +265,7 @@ export default function PostPage({
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      onClick={(e) => {
-                        if (link.mdriveId) {
-                          e.preventDefault();
-                          openMdrive(link.mdriveId, link.label);
-                          return;
-                        }
-                        openSmartlink();
-                      }}
+                      onClick={() => openSmartlink()}
                       className="group flex items-center justify-between gap-3 rounded-2xl border border-white/15 bg-white/[0.08] px-4 py-3 text-sm font-medium text-slate-100 shadow-sm backdrop-blur-xl transition-all hover:-translate-y-0.5 hover:border-white/30 hover:bg-white/[0.16] hover:shadow-lg active:scale-[0.98]"
                     >
                       <span className="flex min-w-0 items-center gap-2.5">
@@ -375,81 +316,6 @@ export default function PostPage({
           </div>
         )}
       </main>
-
-      {/* Mdrive link generator modal — iOS glass */}
-      {mdriveModal.open && typeof document !== "undefined" && createPortal(
-        <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 p-4 backdrop-blur-md"
-          onClick={closeMdrive}
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-lg overflow-hidden rounded-3xl border border-white/15 bg-gradient-to-br from-zinc-900/95 via-zinc-900/90 to-black/95 shadow-2xl ring-1 ring-white/10 backdrop-blur-2xl"
-          >
-            <div className="flex items-center gap-3 border-b border-white/10 px-5 py-4">
-              <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/15 bg-gradient-to-br from-red-500/30 to-red-700/20">
-                <LinkIcon className="h-4 w-4 text-white" strokeWidth={2.5} />
-              </span>
-              <div className="min-w-0 flex-1">
-                <h3 className="text-sm font-bold text-white">Download Links</h3>
-                <p className="line-clamp-1 text-xs text-slate-400">{mdriveModal.title}</p>
-              </div>
-              <button
-                onClick={closeMdrive}
-                className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-300 transition-all hover:bg-white/15 hover:text-white active:scale-95"
-                aria-label="Close"
-              >
-                <X className="h-4 w-4" strokeWidth={2.5} />
-              </button>
-            </div>
-
-            <div className="max-h-[60vh] overflow-y-auto p-5">
-              {mdriveModal.loading && (
-                <div className="flex flex-col items-center justify-center gap-3 py-10 text-slate-300">
-                  <Loader2 className="h-7 w-7 animate-spin text-red-400" strokeWidth={2.2} />
-                  <p className="text-sm">Generating download links…</p>
-                </div>
-              )}
-
-              {!mdriveModal.loading && mdriveModal.error && (
-                <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-4 text-center">
-                  <p className="text-sm text-red-300">{mdriveModal.error}</p>
-                  <button
-                    onClick={() => openMdrive(mdriveModal.id, mdriveModal.title)}
-                    className="mt-3 rounded-full border border-red-400/30 bg-red-500/10 px-4 py-1.5 text-xs font-medium text-red-200 hover:bg-red-500/20"
-                  >
-                    Retry
-                  </button>
-                </div>
-              )}
-
-              {!mdriveModal.loading && !mdriveModal.error && mdriveModal.links.length > 0 && (
-                <div className="grid gap-2.5">
-                  {mdriveModal.links.map((l, i) => (
-                    <a
-                      key={i}
-                      href={l.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => openSmartlink()}
-                      className="group flex items-center justify-between gap-3 rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-sm font-medium text-white shadow-sm backdrop-blur-xl transition-all hover:-translate-y-0.5 hover:border-white/30 hover:bg-white/[0.14] hover:shadow-lg active:scale-[0.98]"
-                    >
-                      <span className="flex min-w-0 items-center gap-2.5">
-                        <span className="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg border border-white/15 bg-gradient-to-br from-red-500/30 to-red-700/20">
-                          <Download className="h-3.5 w-3.5 text-white" strokeWidth={2.5} />
-                        </span>
-                        <span className="line-clamp-1">{l.label}</span>
-                      </span>
-                      <ArrowRight className="h-4 w-4 flex-shrink-0 text-white/60 transition-transform group-hover:translate-x-0.5 group-hover:text-white" strokeWidth={2.2} />
-                    </a>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>,
-        document.body
-      )}
     </article>
   );
 }

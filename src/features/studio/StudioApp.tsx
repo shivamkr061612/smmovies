@@ -240,12 +240,12 @@ export default function App() {
     : "Latest Releases";
 
   return (
-    <div className="min-h-screen bg-zinc-950">
-      {/* Decorative amber/violet glows */}
+    <div className="min-h-screen bg-black">
+      {/* Decorative red background glows */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute -top-40 left-1/4 -translate-x-1/2 rounded-full bg-amber-500/15 blur-[100px] h-[200px] w-[200px] sm:h-[380px] sm:w-[380px] md:h-[560px] md:w-[560px]" />
-        <div className="absolute top-1/3 right-0 translate-x-1/3 rounded-full bg-fuchsia-600/12 blur-[100px] h-[180px] w-[180px] sm:h-[320px] sm:w-[320px] md:h-[460px] md:w-[460px]" />
-        <div className="absolute bottom-0 left-0 -translate-x-1/3 rounded-full bg-violet-700/10 blur-[120px] h-[180px] w-[180px] sm:h-[320px] sm:w-[320px] md:h-[460px] md:w-[460px]" />
+        <div className="absolute -top-40 left-1/2 -translate-x-1/2 rounded-full bg-red-700/15 blur-[80px] h-[180px] w-[180px] sm:h-[320px] sm:w-[320px] md:h-[500px] md:w-[500px]" />
+        <div className="absolute top-1/3 right-0 translate-x-1/3 rounded-full bg-red-600/10 blur-[80px] h-[140px] w-[140px] sm:h-[280px] sm:w-[280px] md:h-[400px] md:w-[400px]" />
+        <div className="absolute bottom-0 left-0 -translate-x-1/3 rounded-full bg-red-800/10 blur-[100px] h-[140px] w-[140px] sm:h-[280px] sm:w-[280px] md:h-[400px] md:w-[400px]" />
       </div>
 
       <Header
@@ -253,9 +253,6 @@ export default function App() {
         onSearch={setPendingSearch}
         onMenuClick={() => setMenuOpen(true)}
         onLogoClick={handleHome}
-        categories={categories}
-        selectedCategory={selectedCategory}
-        onSelectCategory={handleSelectCategory}
       />
 
       <SideMenu
@@ -267,7 +264,7 @@ export default function App() {
         onHome={handleHome}
       />
 
-      <main className="relative mx-auto max-w-7xl space-y-6 px-3 py-4 sm:space-y-7 sm:px-5 sm:py-6">
+      <main className="relative mx-auto max-w-7xl space-y-5 px-3 py-4 sm:space-y-6 sm:px-4 sm:py-6">
         {view.type === "post" ? (
             <PostPage
               slug={view.slug}
@@ -279,7 +276,7 @@ export default function App() {
             />
         ) : (
           <div className="lg:flex lg:gap-6">
-            <div className="min-w-0 flex-1 space-y-6 sm:space-y-7">
+            <div className="min-w-0 flex-1 space-y-5 sm:space-y-6">
             {/* Hero slider only on home page 1 */}
             {showHero && !loading && movies.length > 0 && (
               <HeroSlider movies={movies} onOpenMovie={handleOpenMovie} />
@@ -292,18 +289,13 @@ export default function App() {
             {showNotice && <NoticeBanner />}
 
             {/* Section heading */}
-            <div className="flex items-end justify-between gap-3 px-1 pt-2">
-              <div>
-                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-amber-400">
-                  <span className="inline-block h-2 w-2 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(245,158,11,0.9)]" />
-                  Trending
-                </div>
-                <h2 className="mt-1 text-2xl font-black leading-tight text-white sm:text-3xl">
-                  {listHeading}
-                </h2>
-              </div>
+            <div className="flex items-center justify-between gap-3 px-1 pt-2">
+              <h2 className="flex items-center gap-2 text-xl font-extrabold text-white sm:text-2xl">
+                <span className="text-2xl sm:text-3xl">🔥</span>
+                {listHeading}
+              </h2>
               {view.type === "list" && !searchQuery && (
-                <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-bold text-zinc-300">
+                <span className="text-xs font-medium text-slate-400 sm:text-sm">
                   Page {currentPage}
                 </span>
               )}
@@ -311,19 +303,19 @@ export default function App() {
 
             {/* Status */}
             {loading && (
-              <div className="flex items-center gap-2 text-sm font-medium text-zinc-400">
-                <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-amber-400 border-r-transparent" />
-                Loading latest releases...
+              <div className="flex items-center gap-2 text-sm text-slate-400">
+                <span className="h-3 w-3 animate-spin rounded-full border-2 border-red-500 border-r-transparent" />
+                Loading...
               </div>
             )}
 
             {/* Error */}
             {error && !loading && (
-              <div className="rounded-2xl border border-amber-500/20 bg-amber-500/[0.04] p-6 text-center">
-                <p className="text-sm text-amber-200">{error}</p>
+              <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-6 text-center">
+                <p className="text-sm text-red-300">{error}</p>
                 <button
                   onClick={() => fetchData(currentPage, selectedCategory, searchQuery)}
-                  className="mt-3 rounded-xl bg-gradient-to-r from-amber-500 to-fuchsia-600 px-5 py-2 text-sm font-bold text-white shadow-lg shadow-amber-500/30 transition-all hover:scale-105"
+                  className="mt-3 rounded-lg bg-red-500/10 px-4 py-2 text-sm font-medium text-red-300 ring-1 ring-red-500/20 transition-colors hover:bg-red-500/20"
                 >
                   Retry
                 </button>
@@ -332,7 +324,7 @@ export default function App() {
 
             {/* Movies grid */}
             {!error && (
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+              <div className="movies-grid grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
                 {loading
                   ? Array.from({ length: 12 }).map((_, i) => <SkeletonCard key={i} />)
                   : movies.map((movie) => (
@@ -349,18 +341,17 @@ export default function App() {
             {/* Empty state */}
             {!loading && !error && movies.length === 0 && (
               <div className="py-20 text-center">
-                <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500/15 to-fuchsia-500/10 text-4xl ring-1 ring-amber-400/20">
-                  🎬
+                <div className="mx-auto mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-slate-800/50 text-4xl">
+                  🎞️
                 </div>
-                <h3 className="text-lg font-black text-white">Nothing here</h3>
-                <p className="mt-2 text-sm text-zinc-500">
+                <h3 className="text-lg font-semibold text-slate-300">No movies found</h3>
+                <p className="mt-2 text-sm text-slate-500">
                   {searchQuery
                     ? "Try a different search term."
                     : "Try a different category or check back later."}
                 </p>
               </div>
             )}
-
 
             {/* Pagination */}
             {showPagination && !loading && (
