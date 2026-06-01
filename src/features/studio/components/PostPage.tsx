@@ -123,8 +123,9 @@ export default function PostPage({
     }
   }, [post]);
 
-  // Intercept clicks on any link inside the scraped post body and on the
-  // quick-download buttons so each click also opens the smartlink ad.
+  // Intercept clicks on any link inside the scraped post body. For mdrive.lol
+  // links we resolve the real download URL through the WP REST API and open
+  // that instead of redirecting the user through mdrive.lol.
   useEffect(() => {
     const el = bodyRef.current;
     if (!el) return;
@@ -133,11 +134,39 @@ export default function PostPage({
       if (!target) return;
       const href = target.getAttribute("href");
       if (!href || href.startsWith("#")) return;
+      if (isMdriveLink(href)) {
+        e.preventDefault();
+        e.stopPropagation();
+        handleMdriveClick(href, target.textContent?.trim() || "Download");
+        return;
+      }
       openSmartlink();
     };
-    el.addEventListener("click", onClick);
-    return () => el.removeEventListener("click", onClick);
+    el.addEventListener("click", onClick, true);
+    return () => el.removeEventListener("click", onClick, true);
   }, [post]);
+
+  async function handleMdriveClick(url: string, label: string) {
+    if (resolving) return;
+    setResolveError(null);
+    setResolving(label);
+    try {
+      openSmartlink();
+      const links = await resolveMdriveLink(url);
+      if (links.length === 0) {
+        setResolveError(
+          "Could not generate a direct link for this option. Please try another."
+        );
+        return;
+      }
+      window.open(links[0], "_blank", "noopener,noreferrer");
+    } catch (err) {
+      console.error(err);
+      setResolveError("Failed to generate download link. Please try again.");
+    } finally {
+      setResolving(null);
+    }
+  }
 
   const displayTitle = post?.title || fallbackTitle || "Loading...";
   const displayImage = post?.imageUrl || fallbackImage || "";
