@@ -31,6 +31,8 @@ export default function PostPage({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const bodyRef = useRef<HTMLDivElement | null>(null);
+  const [resolving, setResolving] = useState<string | null>(null);
+  const [resolveError, setResolveError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
