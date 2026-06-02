@@ -383,6 +383,93 @@ export default function PostPage({
           </div>
         )}
       </main>
+
+      {/* Download links popup - centered modal */}
+      {popup && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+          role="dialog"
+          aria-modal="true"
+          onClick={() => !popup.loading && setPopup(null)}
+        >
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-md overflow-hidden rounded-3xl border border-white/15 bg-gradient-to-br from-[#1a0a0a] via-[#0a0a0a] to-[#1a0a0a] shadow-2xl ring-1 ring-red-500/20"
+          >
+            <div className="flex items-start justify-between gap-3 border-b border-white/10 bg-white/[0.04] px-5 py-4">
+              <div className="min-w-0">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-red-300/80">
+                  Direct Download
+                </p>
+                <h4 className="mt-0.5 line-clamp-2 text-sm font-bold text-white">
+                  {popup.label}
+                </h4>
+              </div>
+              <button
+                onClick={() => !popup.loading && setPopup(null)}
+                disabled={popup.loading}
+                className="flex-shrink-0 rounded-full border border-white/15 bg-white/5 p-1.5 text-slate-300 transition-colors hover:bg-white/15 hover:text-white disabled:opacity-50"
+                aria-label="Close"
+              >
+                <X className="h-4 w-4" strokeWidth={2.5} />
+              </button>
+            </div>
+
+            <div className="px-5 py-5">
+              {popup.loading && (
+                <div className="flex flex-col items-center justify-center gap-3 py-8">
+                  <Loader2 className="h-8 w-8 animate-spin text-red-400" strokeWidth={2.2} />
+                  <p className="text-sm text-slate-300">Generating direct links…</p>
+                  <p className="text-xs text-slate-500">Please wait a moment</p>
+                </div>
+              )}
+
+              {!popup.loading && popup.error && (
+                <div className="rounded-xl border border-red-400/30 bg-red-500/10 p-4 text-center text-sm text-red-200">
+                  {popup.error}
+                </div>
+              )}
+
+              {!popup.loading && !popup.error && popup.links.length > 0 && (
+                <>
+                  <p className="mb-3 text-xs text-slate-400">
+                    Choose your preferred server:
+                  </p>
+                  <div className="space-y-2.5">
+                    {popup.links.map((u, idx) => {
+                      const { name, Icon } = serverLabel(u);
+                      return (
+                        <a
+                          key={idx}
+                          href={u}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() => openSmartlink()}
+                          className="group flex items-center justify-between gap-3 rounded-2xl border border-white/15 bg-gradient-to-r from-red-500/10 to-red-600/5 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:border-red-400/50 hover:from-red-500/20 hover:to-red-600/15 hover:shadow-lg active:scale-[0.98]"
+                        >
+                          <span className="flex items-center gap-3">
+                            <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-red-400/30 bg-red-500/20 text-red-200">
+                              <Icon className="h-4 w-4" strokeWidth={2.4} />
+                            </span>
+                            <span className="flex flex-col">
+                              <span>{name}</span>
+                              <span className="text-[10px] font-normal text-slate-400">
+                                Fast Download
+                              </span>
+                            </span>
+                          </span>
+                          <ArrowRight className="h-4 w-4 text-red-300 transition-transform group-hover:translate-x-1" strokeWidth={2.4} />
+                        </a>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </article>
   );
 }
