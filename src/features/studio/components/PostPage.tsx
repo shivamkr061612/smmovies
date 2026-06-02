@@ -312,7 +312,7 @@ export default function PostPage({
                 <div className="grid gap-2.5 sm:grid-cols-2">
                   {post.downloadLinks.slice(0, 20).map((link, i) => {
                     const mdrive = isMdriveLink(link.url);
-                    const isLoading = resolving === link.label;
+                    const isLoading = popup?.loading && popup.label === link.label;
                     return (
                       <a
                         key={i}
