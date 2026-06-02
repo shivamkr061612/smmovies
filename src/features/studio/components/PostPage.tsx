@@ -146,25 +146,45 @@ export default function PostPage({
   }, [post]);
 
   async function handleMdriveClick(url: string, label: string) {
-    if (resolving) return;
-    setResolveError(null);
-    setResolving(label);
+    if (popup?.loading) return;
+    setPopup({ label, loading: true, links: [], error: null });
     try {
       openSmartlink();
       const links = await resolveMdriveLink(url);
       if (links.length === 0) {
-        setResolveError(
-          "Could not generate a direct link for this option. Please try another."
-        );
+        setPopup({
+          label,
+          loading: false,
+          links: [],
+          error: "Could not generate direct links for this option. Please try another.",
+        });
         return;
       }
-      window.open(links[0], "_blank", "noopener,noreferrer");
+      setPopup({ label, loading: false, links, error: null });
     } catch (err) {
       console.error(err);
-      setResolveError("Failed to generate download link. Please try again.");
-    } finally {
-      setResolving(null);
+      setPopup({
+        label,
+        loading: false,
+        links: [],
+        error: "Failed to generate download links. Please try again.",
+      });
     }
+  }
+
+  function serverLabel(u: string): { name: string; Icon: typeof Cloud } {
+    const h = (() => {
+      try { return new URL(u).hostname.toLowerCase(); } catch { return ""; }
+    })();
+    if (h.includes("hubcloud")) return { name: "HubCloud", Icon: Cloud };
+    if (h.includes("gdflix")) return { name: "GDFlix", Icon: HardDrive };
+    if (h.includes("gdtot")) return { name: "GDToT", Icon: HardDrive };
+    if (h.includes("gdmirror")) return { name: "GDMirror", Icon: HardDrive };
+    if (h.includes("filepress")) return { name: "FilePress", Icon: HardDrive };
+    if (h.includes("mdrive.mom")) return { name: "MDrive", Icon: Cloud };
+    if (h.includes("fast-dl")) return { name: "Fast-DL", Icon: Cloud };
+    if (h.includes("sdrive")) return { name: "SDrive", Icon: Cloud };
+    return { name: h || "Direct Link", Icon: LinkIcon };
   }
 
   const displayTitle = post?.title || fallbackTitle || "Loading...";
