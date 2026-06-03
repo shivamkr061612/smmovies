@@ -1,7 +1,7 @@
 import type { Category } from "../types";
 import { useEffect } from "react";
 import { Home, Film, X, ChevronRight, Sparkles, Send } from "lucide-react";
-import { SITE_LOGO, SITE_NAME } from "../config/site";
+import { SITE_LOGO, SITE_NAME, TELEGRAM_URL } from "../config/site";
 
 interface SideMenuProps {
   open: boolean;
@@ -139,7 +139,7 @@ export default function SideMenu({
         {/* Telegram CTA */}
         <div className="px-3 pb-6">
           <a
-            href="https://t.me/+FSWElNbfXwdjYWNl"
+            href={TELEGRAM_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-3 rounded-2xl border border-sky-400/30 bg-gradient-to-br from-sky-500/15 via-sky-500/10 to-blue-600/10 p-3.5 transition-all hover:border-sky-300/60 hover:from-sky-500/25 active:scale-[0.98]"
