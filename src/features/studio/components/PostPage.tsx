@@ -191,6 +191,7 @@ export default function PostPage({
   const displayImage = post?.imageUrl || fallbackImage || "";
 
   return (
+    <>
     <article className="post-content overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] shadow-2xl ring-1 ring-white/5 backdrop-blur-2xl">
       {/* Top logos */}
       {POST_LOGOS_TOP && POST_LOGOS_TOP.length > 0 && (
@@ -384,6 +385,8 @@ export default function PostPage({
         )}
       </main>
 
+    </article>
+
       {/* Download links popup - centered modal */}
       {popup && (
         <div
@@ -470,6 +473,6 @@ export default function PostPage({
           </div>
         </div>
       )}
-    </article>
+    </>
   );
 }

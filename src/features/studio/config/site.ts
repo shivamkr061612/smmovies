@@ -34,6 +34,7 @@ export const SITE_NAME = readConfig("siteName") || readConfig("SITE_NAME") || "S
 export const SITE_TITLE = readConfig("siteTitle") || readConfig("SITE_TITLE") || "SM Movies — Download Latest Movies & Web Series in HD, 4K";
 export const SITE_DESCRIPTION = readConfig("siteDescription") || readConfig("SITE_DESCRIPTION") || "Download latest Bollywood, Hollywood, South Indian movies and web series in 480p, 720p, 1080p and 4K quality.";
 export const SITE_LOGO = readConfig("logoUrl") || readConfig("SITE_LOGO") || "";
+export const TELEGRAM_URL = readConfig("telegramUrl") || readConfig("TELEGRAM_URL") || "https://t.me/+FSWElNbfXwdjYWNl";
 
 // Logos to render above a post. Provide absolute URLs or relative paths served from `public`.
 export const POST_LOGOS_TOP: string[] = readConfig("POST_LOGOS_TOP") || (readConfig("logoUrl") ? [readConfig("logoUrl")] : []);
@@ -57,4 +58,5 @@ export default {
   FOOTER_AD_HTML,
   NOTICE_HTML,
   MAINTAINER_LIST,
+  TELEGRAM_URL,
 };
