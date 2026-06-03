@@ -1,5 +1,5 @@
 import type { Movie, ScrapeResult, Category, PostContent } from "../types";
-import { SITE_BASE_URL as BASE_URL } from "../config/site";
+import { SITE_BASE_URL as BASE_URL, TELEGRAM_URL } from "../config/site";
 
 const PROXIES = [
   (url: string) => `https://mag.dhanjeerider.workers.dev/?url=${encodeURIComponent(url)}`,
@@ -337,7 +337,26 @@ export async function fetchPostContent(slug: string): Promise<PostContent> {
   if (body) {
     // Clone so we don't modify the original
     const clone = body.cloneNode(true) as Element;
-    clone.querySelectorAll("script, style, iframe, ins, .ads, .ad, [class*='advert']").forEach((el) => el.remove());
+    clone.querySelectorAll("script, style, ins, .ads, .ad, [class*='advert']").forEach((el) => el.remove());
+
+    // Keep trailers visible and normalize links before rendering.
+    clone.querySelectorAll("iframe").forEach((frame) => {
+      const src = frame.getAttribute("src") || "";
+      if (!/youtube|youtu\.be/i.test(src)) return;
+      frame.setAttribute("loading", "lazy");
+      frame.setAttribute("allowfullscreen", "true");
+      frame.setAttribute("allow", "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share");
+      frame.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
+    });
+
+    clone.querySelectorAll("a").forEach((a) => {
+      const href = a.getAttribute("href") || "";
+      if (/t\.me|telegram/i.test(href)) {
+        a.setAttribute("href", TELEGRAM_URL);
+      } else if (href.startsWith("/")) {
+        a.setAttribute("href", `${BASE_URL.replace(/\/$/, "")}${href}`);
+      }
+    });
 
     // Extract images
     const imgs = clone.querySelectorAll("img");
@@ -453,6 +472,7 @@ async function getMdrivePostId(mdriveUrl: string): Promise<string | null> {
     const parts = u.pathname.split("/").filter(Boolean);
     const slug = parts[parts.length - 1];
     if (!slug) return null;
+    if (/^\d+$/.test(slug)) return slug;
 
     const data = await fetchJsonWithFallback(
       `${MDRIVE_API}?slug=${encodeURIComponent(slug)}`
