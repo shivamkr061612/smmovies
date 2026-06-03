@@ -90,9 +90,10 @@ export default function App() {
     if (view.type !== "list") return;
     const catName = categories.find((c) => c.slug === selectedCategory)?.name || "Latest";
     if (searchQuery) {
-      document.title = `Search: ${searchQuery} | MoviesDrive`;
+      document.title = `Search: ${searchQuery} | SM Movies`;
     } else if (selectedCategory) {
-      document.title = `${catName} Movies & Web Series — Page ${currentPage} | MoviesDrive`;
+      document.title = `${catName} Movies & Web Series — Page ${currentPage} | SM Movies`;
+
     } else {
       document.title = SITE_TITLE;
     }
