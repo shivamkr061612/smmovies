@@ -175,9 +175,13 @@ export default function App() {
   };
 
   const handleBackToList = () => {
+    if (window.history.state?.type === "post") {
+      window.history.back();
+      return;
+    }
     setView({ type: "list" });
     try {
-      window.history.pushState({ type: "list" }, "", "/");
+      window.history.replaceState({ type: "list" }, "", "/");
     } catch (err) {}
   };
 
