@@ -48,6 +48,8 @@ export function scrubBrand(input: string): string {
 }
 
 // Convert a moviesdrives URL into our internal slug
+export function urlToSlug(url: string): string {
+
 
   try {
     const u = new URL(url);
