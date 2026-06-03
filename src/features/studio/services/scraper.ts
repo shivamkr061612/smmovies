@@ -37,8 +37,18 @@ async function fetchWithProxy(url: string, proxyIndex = 0): Promise<string> {
   }
 }
 
+// Replace third-party brand mentions with our own brand in any scraped HTML/text.
+export function scrubBrand(input: string): string {
+  if (!input) return input;
+  return input
+    // Domain mentions like moviesdrive.cv, moviedrive.cv, mdrive.cv (any tld variant of these brands)
+    .replace(/\b(?:movies?drive|mdrive)\.(?:cv|lol|my|com|net|org|in|info|me|mom|club|co|cc|to|tv|site|xyz|live|wtf)\b/gi, "smmovies.online")
+    // Plain brand text without TLD
+    .replace(/\bMovies?Drive\b/gi, "SM Movies");
+}
+
 // Convert a moviesdrives URL into our internal slug
-export function urlToSlug(url: string): string {
+
   try {
     const u = new URL(url);
     return u.pathname.replace(/^\/|\/$/g, "");
@@ -380,12 +390,13 @@ export async function fetchPostContent(slug: string): Promise<PostContent> {
         /480p|720p|1080p|2160p|4K|HEVC|x264|x265|G-Drive|Download|HDTC|WEB-DL|BluRay/i.test(text + href) &&
         text.length < 200
       ) {
-        downloadLinks.push({ label: text || "Download", url: href });
+        downloadLinks.push({ label: scrubBrand(text || "Download"), url: href });
       }
     });
 
-    bodyHtml = clone.innerHTML;
+    bodyHtml = scrubBrand(clone.innerHTML);
   }
+
 
   // Featured image fallback
   if (!imageUrl) {
