@@ -37,8 +37,20 @@ async function fetchWithProxy(url: string, proxyIndex = 0): Promise<string> {
   }
 }
 
+// Replace third-party brand mentions with our own brand in any scraped HTML/text.
+export function scrubBrand(input: string): string {
+  if (!input) return input;
+  return input
+    // Domain mentions like moviesdrive.cv, moviedrive.cv, mdrive.cv (any tld variant of these brands)
+    .replace(/\b(?:movies?drive|mdrive)\.(?:cv|lol|my|com|net|org|in|info|me|mom|club|co|cc|to|tv|site|xyz|live|wtf)\b/gi, "smmovies.online")
+    // Plain brand text without TLD
+    .replace(/\bMovies?Drive\b/gi, "SM Movies");
+}
+
 // Convert a moviesdrives URL into our internal slug
 export function urlToSlug(url: string): string {
+
+
   try {
     const u = new URL(url);
     return u.pathname.replace(/^\/|\/$/g, "");
@@ -380,12 +392,13 @@ export async function fetchPostContent(slug: string): Promise<PostContent> {
         /480p|720p|1080p|2160p|4K|HEVC|x264|x265|G-Drive|Download|HDTC|WEB-DL|BluRay/i.test(text + href) &&
         text.length < 200
       ) {
-        downloadLinks.push({ label: text || "Download", url: href });
+        downloadLinks.push({ label: scrubBrand(text || "Download"), url: href });
       }
     });
 
-    bodyHtml = clone.innerHTML;
+    bodyHtml = scrubBrand(clone.innerHTML);
   }
+
 
   // Featured image fallback
   if (!imageUrl) {
@@ -484,7 +497,12 @@ async function getMdrivePostId(mdriveUrl: string): Promise<string | null> {
   }
 }
 
-export async function resolveMdriveLink(mdriveUrl: string): Promise<string[]> {
+export interface ResolvedDownload {
+  label: string;
+  url: string;
+}
+
+export async function resolveMdriveLink(mdriveUrl: string): Promise<ResolvedDownload[]> {
   const id = await getMdrivePostId(mdriveUrl);
   if (!id) return [];
   try {
@@ -492,24 +510,88 @@ export async function resolveMdriveLink(mdriveUrl: string): Promise<string[]> {
     const html: string =
       data?.content?.rendered || data?.content || data?.excerpt?.rendered || "";
     if (!html) return [];
-    const re = /https?:\/\/(?:hubcloud|gdflix|gdtot|gdmirror|filepress|mdrive\.mom|fast-dl|sdrive)[^\s"'<>)]+/gi;
-    const matches = html.match(re) || [];
-    // Dedupe, keep order
+
+    const hostRe = /^https?:\/\/(?:hubcloud|gdflix|gdtot|gdmirror|filepress|mdrive\.mom|fast-dl|sdrive)/i;
+    const matchUrlRe = /https?:\/\/(?:hubcloud|gdflix|gdtot|gdmirror|filepress|mdrive\.mom|fast-dl|sdrive)[^\s"'<>)]+/gi;
+
+    const out: ResolvedDownload[] = [];
     const seen = new Set<string>();
-    const out: string[] = [];
-    for (const m of matches) {
-      const clean = m.replace(/[.,);]+$/, "");
-      if (!seen.has(clean)) {
-        seen.add(clean);
-        out.push(clean);
+
+    // Try DOM-based extraction so we can attach the nearest episode/heading label.
+    try {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(`<div>${html}</div>`, "text/html");
+      const root = doc.body.firstElementChild as Element | null;
+      if (!root) throw new Error("no root");
+
+      const epRe = /(episode\s*\d+|ep\s*\d+|e\d{1,3}|s\d{1,2}\s*e\d{1,3}|part\s*\d+)/i;
+
+      const findLabel = (a: Element): string => {
+        // Walk previous siblings / ancestors looking for an episode marker.
+        let node: Element | null = a;
+        let hops = 0;
+        while (node && hops < 60) {
+          // previous text
+          let prev: Element | null = node.previousElementSibling;
+          while (prev) {
+            const t = (prev.textContent || "").trim();
+            const m = t.match(epRe);
+            if (m) return m[0].replace(/\s+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+            prev = prev.previousElementSibling;
+            hops++;
+            if (hops > 60) break;
+          }
+          node = node.parentElement;
+          hops++;
+        }
+        const t = (a.textContent || "").trim();
+        const m = t.match(epRe);
+        if (m) return m[0];
+        return "";
+      };
+
+      const anchors = Array.from(root.querySelectorAll("a")).filter((a) =>
+        hostRe.test(a.getAttribute("href") || "")
+      );
+
+      if (anchors.length > 0) {
+        anchors.forEach((a) => {
+          const url = (a.getAttribute("href") || "").replace(/[.,);]+$/, "");
+          if (!url || seen.has(url)) return;
+          seen.add(url);
+          const ep = findLabel(a);
+          const linkText = (a.textContent || "").trim();
+          let label = ep
+            ? linkText && !epRe.test(linkText)
+              ? `${ep} — ${linkText}`
+              : ep
+            : linkText || "Direct Link";
+          if (label.length > 80) label = label.slice(0, 77) + "…";
+          out.push({ label, url });
+        });
+      }
+    } catch {
+      /* fall through to regex */
+    }
+
+    if (out.length === 0) {
+      const matches = html.match(matchUrlRe) || [];
+      for (const m of matches) {
+        const clean = m.replace(/[.,);]+$/, "");
+        if (!seen.has(clean)) {
+          seen.add(clean);
+          out.push({ label: "Direct Link", url: clean });
+        }
       }
     }
+
     return out;
   } catch (e) {
     console.warn("resolveMdriveLink failed", e);
     return [];
   }
 }
+
 
 export function isMdriveLink(url: string): boolean {
   try {
