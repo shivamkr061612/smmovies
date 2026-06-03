@@ -31,7 +31,7 @@ export default function PostPage({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const bodyRef = useRef<HTMLDivElement | null>(null);
-  const [popup, setPopup] = useState<{ label: string; loading: boolean; links: { label: string; url: string }[]; error: string | null } | null>(null);
+  const [popup, setPopup] = useState<{ label: string; loading: boolean; links: string[]; error: string | null } | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -440,33 +440,32 @@ export default function PostPage({
                     Choose your preferred server:
                   </p>
                   <div className="space-y-2.5">
-                    {popup.links.map((item, idx) => {
-                      const { name, Icon } = serverLabel(item.url);
+                    {popup.links.map((u, idx) => {
+                      const { name, Icon } = serverLabel(u);
                       return (
                         <a
                           key={idx}
-                          href={item.url}
+                          href={u}
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={() => openSmartlink()}
                           className="group flex items-center justify-between gap-3 rounded-2xl border border-white/15 bg-gradient-to-r from-red-500/10 to-red-600/5 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:border-red-400/50 hover:from-red-500/20 hover:to-red-600/15 hover:shadow-lg active:scale-[0.98]"
                         >
-                          <span className="flex min-w-0 items-center gap-3">
-                            <span className="inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl border border-red-400/30 bg-red-500/20 text-red-200">
+                          <span className="flex items-center gap-3">
+                            <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-red-400/30 bg-red-500/20 text-red-200">
                               <Icon className="h-4 w-4" strokeWidth={2.4} />
                             </span>
-                            <span className="flex min-w-0 flex-col">
-                              <span className="line-clamp-1">{item.label}</span>
+                            <span className="flex flex-col">
+                              <span>{name}</span>
                               <span className="text-[10px] font-normal text-slate-400">
-                                {name} · Fast Download
+                                Fast Download
                               </span>
                             </span>
                           </span>
-                          <ArrowRight className="h-4 w-4 flex-shrink-0 text-red-300 transition-transform group-hover:translate-x-1" strokeWidth={2.4} />
+                          <ArrowRight className="h-4 w-4 text-red-300 transition-transform group-hover:translate-x-1" strokeWidth={2.4} />
                         </a>
                       );
                     })}
-
                   </div>
                 </>
               )}
