@@ -333,12 +333,22 @@ export default function PostPage({
                           isLoading ? "pointer-events-none opacity-70" : ""
                         }`}
                       >
-                        <span className="flex min-w-0 items-center gap-2.5">
+                        <span className="flex min-w-0 flex-1 items-center gap-2.5">
                           <span className="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg border border-white/15 bg-white/10 text-white">
                             <Download className="h-3.5 w-3.5" strokeWidth={2.5} />
                           </span>
-                          <span className="line-clamp-1">
-                            {isLoading ? "Generating…" : link.label}
+                          <span className="flex min-w-0 flex-col">
+                            <span className="line-clamp-2 break-words text-left">
+                              {isLoading ? "Generating…" : link.label}
+                            </span>
+                            {(() => {
+                              const m = link.label.match(/(S\d{1,2}\s*E\d{1,3}|Episode\s*\d{1,3}|EP\s*\d{1,3}|E\d{1,3})/i);
+                              return m ? (
+                                <span className="mt-0.5 inline-flex w-fit items-center rounded-md border border-red-400/30 bg-red-500/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-red-200">
+                                  {m[0].toUpperCase()}
+                                </span>
+                              ) : null;
+                            })()}
                           </span>
                         </span>
                         <ArrowRight className="h-4 w-4 flex-shrink-0 text-white/60 transition-transform group-hover:translate-x-0.5 group-hover:text-white" strokeWidth={2.2} />
