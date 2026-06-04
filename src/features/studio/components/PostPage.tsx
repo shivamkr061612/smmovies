@@ -419,7 +419,7 @@ export default function PostPage({
               </button>
             </div>
 
-            <div className="px-5 py-5">
+            <div className="overflow-y-auto px-5 py-5">
               {popup.loading && (
                 <div className="flex flex-col items-center justify-center gap-3 py-8">
                   <Loader2 className="h-8 w-8 animate-spin text-red-400" strokeWidth={2.2} />
