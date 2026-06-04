@@ -1,0 +1,43 @@
+name: Deploy to Cloudflare Workers
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build
+        run: bun run build
+
+      - name: Install Wrangler
+        run: npm install -g wrangler
+
+      - name: Patch wrangler config
+        run: |
+          node -e "
+            const fs = require('fs');
+            const cfg = JSON.parse(fs.readFileSync('dist/server/wrangler.json', 'utf8'));
+            cfg.compatibility_date = '2024-11-01';
+            cfg.compatibility_flags = ['nodejs_compat'];
+            cfg.workers_dev = true;
+            fs.writeFileSync('dist/server/wrangler.json', JSON.stringify(cfg, null, 2));
+            console.log('Config patched:', JSON.stringify(cfg, null, 2));
+          "
+
+      - name: Deploy
+        run: |
+          rm -rf .wrangler
+          wrangler deploy --config dist/server/wrangler.json
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
