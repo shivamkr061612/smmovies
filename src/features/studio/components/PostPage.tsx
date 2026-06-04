@@ -390,7 +390,7 @@ export default function PostPage({
       {/* Download links popup - centered modal */}
       {popup && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+          className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto p-4 sm:items-center"
           role="dialog"
           aria-modal="true"
           onClick={() => !popup.loading && setPopup(null)}
