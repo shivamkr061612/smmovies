@@ -418,6 +418,14 @@ export default function PostPage({
                 <h4 className="mt-0.5 line-clamp-2 text-sm font-bold text-white">
                   {popup.label}
                 </h4>
+                {(() => {
+                  const m = popup.label.match(/(S\d{1,2}\s*E\d{1,3}|Episode\s*\d{1,3}|EP\s*\d{1,3}|E\d{1,3})/i);
+                  return m ? (
+                    <span className="mt-1.5 inline-flex items-center gap-1 rounded-md border border-red-400/30 bg-red-500/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-red-200">
+                      📺 {m[0].toUpperCase()}
+                    </span>
+                  ) : null;
+                })()}
               </div>
               <button
                 onClick={() => !popup.loading && setPopup(null)}
