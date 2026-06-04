@@ -385,6 +385,9 @@ export async function fetchPostContent(slug: string): Promise<PostContent> {
     });
 
     bodyHtml = clone.innerHTML;
+    // Rebrand: replace any reference to the source site with our own brand
+    bodyHtml = bodyHtml.replace(/Moviesdrives?\.(cv|lol|my|mom|com|net|org|in|co|to|biz|info)!?/gi, "SMmovies.online");
+    bodyHtml = bodyHtml.replace(/\bMoviesdrives?\b/gi, "SMmovies");
   }
 
   // Featured image fallback
