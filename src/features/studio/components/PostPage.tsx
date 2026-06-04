@@ -398,7 +398,7 @@ export default function PostPage({
           <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
           <div
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-md overflow-hidden rounded-3xl border border-white/15 bg-gradient-to-br from-[#1a0a0a] via-[#0a0a0a] to-[#1a0a0a] shadow-2xl ring-1 ring-red-500/20"
+            className="relative my-auto w-full max-w-md overflow-hidden rounded-3xl border border-white/15 bg-gradient-to-br from-[#1a0a0a] via-[#0a0a0a] to-[#1a0a0a] shadow-2xl ring-1 ring-red-500/20 max-h-[calc(100vh-2rem)] flex flex-col"
           >
             <div className="flex items-start justify-between gap-3 border-b border-white/10 bg-white/[0.04] px-5 py-4">
               <div className="min-w-0">
