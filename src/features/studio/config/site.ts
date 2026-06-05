@@ -2,6 +2,8 @@
 // This file supports runtime overrides via `window.__SITE_CONFIG` so you can
 // set values in `index.html` or a small JSON file without rebuilding.
 
+import logoAsset from "@/assets/sm-movies-logo.png.asset.json";
+
 declare global {
   interface Window {
     APP_CONFIG?: any;
@@ -33,8 +35,9 @@ export const SITE_BASE_URL =
 export const SITE_NAME = readConfig("siteName") || readConfig("SITE_NAME") || "SM Movies";
 export const SITE_TITLE = readConfig("siteTitle") || readConfig("SITE_TITLE") || "SM Movies — Download Latest Movies & Web Series in HD, 4K";
 export const SITE_DESCRIPTION = readConfig("siteDescription") || readConfig("SITE_DESCRIPTION") || "Download latest Bollywood, Hollywood, South Indian movies and web series in 480p, 720p, 1080p and 4K quality.";
-export const SITE_LOGO = readConfig("logoUrl") || readConfig("SITE_LOGO") || "";
+export const SITE_LOGO = readConfig("logoUrl") || readConfig("SITE_LOGO") || logoAsset.url;
 export const TELEGRAM_URL = readConfig("telegramUrl") || readConfig("TELEGRAM_URL") || "https://t.me/+FSWElNbfXwdjYWNl";
+export const WHATSAPP_CHANNEL_URL = readConfig("whatsappChannelUrl") || readConfig("WHATSAPP_CHANNEL_URL") || "https://whatsapp.com/channel/0029Vb7WBkQI1rcoQOrStM3g";
 
 // Logos to render above a post. Provide absolute URLs or relative paths served from `public`.
 export const POST_LOGOS_TOP: string[] = readConfig("POST_LOGOS_TOP") || (readConfig("logoUrl") ? [readConfig("logoUrl")] : []);
