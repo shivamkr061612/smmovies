@@ -20,58 +20,8 @@ jobs:
       - name: Build
         run: bun run build
 
-      - name: Find build output & Deploy
-        run: |
-          echo "=== All built JS files (not node_modules) ==="
-          find . -not -path "*/node_modules/*" -not -path "*/.git/*" \
-            \( -name "*.mjs" -o -name "_worker.js" -o -name "index.js" \) 2>/dev/null
-
-          echo "=== Checking output dirs ==="
-          for d in .output dist build out; do
-            [ -d "$d" ] && echo "FOUND: $d/" && ls -la "$d/" || true
-          done
-
-          # Auto-detect worker entry
-          if [ -f ".output/server/index.mjs" ]; then
-            MAIN=".output/server/index.mjs"
-            ASSETS_DIR=".output/public"
-          elif [ -f "dist/_worker.js" ]; then
-            MAIN="dist/_worker.js"
-            ASSETS_DIR="dist"
-          elif [ -f ".output/_worker.js" ]; then
-            MAIN=".output/_worker.js"
-            ASSETS_DIR=".output/public"
-          elif [ -f "dist/server/index.mjs" ]; then
-            MAIN="dist/server/index.mjs"
-            ASSETS_DIR="dist/public"
-          else
-            echo "ERROR: No worker entry found! See output above."
-            exit 1
-          fi
-
-          echo "=== Using entry: $MAIN ==="
-
-          # Write fresh wrangler.toml with correct path
-          cat > wrangler.toml <<EOF
-name = "smmovies"
-main = "$MAIN"
-compatibility_date = "2024-11-01"
-compatibility_flags = ["nodejs_compat"]
-workers_dev = true
-EOF
-
-          if [ -d "$ASSETS_DIR" ]; then
-            cat >> wrangler.toml <<EOF
-
-[assets]
-directory = "$ASSETS_DIR"
-EOF
-          fi
-
-          echo "=== Final wrangler.toml ==="
-          cat wrangler.toml
-
-          npx wrangler@latest deploy
+      - name: Deploy to Cloudflare Workers
+        run: npx wrangler@latest deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
