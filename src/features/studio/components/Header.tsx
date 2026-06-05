@@ -201,3 +201,42 @@ export default function Header({ searchValue, onSearch, onMenuClick, onLogoClick
     </>
   );
 }
+
+function FilterRow({
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  options: string[];
+}) {
+  return (
+    <div className="flex flex-wrap items-center gap-1.5">
+      <span className="mr-1 w-[68px] flex-shrink-0 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">
+        {label}
+      </span>
+      <div className="flex flex-wrap gap-1.5">
+        {options.map((opt) => {
+          const active = value === opt;
+          return (
+            <button
+              key={opt || "any"}
+              type="button"
+              onClick={() => onChange(opt)}
+              className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-all ${
+                active
+                  ? "border-red-400/60 bg-red-500/25 text-white shadow-sm shadow-red-600/30"
+                  : "border-white/10 bg-white/[0.04] text-slate-300 hover:border-white/25 hover:text-white"
+              }`}
+            >
+              {opt || "Any"}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
