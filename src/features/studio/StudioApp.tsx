@@ -8,6 +8,7 @@ import SkeletonCard from "./components/SkeletonCard";
 import Pagination from "./components/Pagination";
 import PostPage from "./components/PostPage";
 import Footer from "./components/Footer";
+import WelcomePopup from "./components/WelcomePopup";
 import {
   Banner320x50,
   Banner160x600,
@@ -384,6 +385,9 @@ export default function App() {
 
       {/* Footer (moved to component) */}
       <Footer />
+
+      {/* First-visit welcome popup */}
+      <WelcomePopup />
     </div>
   );
 }
