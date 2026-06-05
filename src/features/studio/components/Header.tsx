@@ -14,6 +14,8 @@ export default function Header({ searchValue, onSearch, onMenuClick, onLogoClick
   const [open, setOpen] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
   const [quality, setQuality] = useState<string>("");
+  const [language, setLanguage] = useState<string>("");
+  const [year, setYear] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -40,9 +42,11 @@ export default function Header({ searchValue, onSearch, onMenuClick, onLogoClick
   }, [open]);
 
   const submitSearch = (q: string) => {
-    const final = quality ? `${q} ${quality}`.trim() : q;
-    onSearch(final);
+    const parts = [q, quality, language, year].filter(Boolean);
+    onSearch(parts.join(" ").trim());
   };
+
+  const hasActiveFilter = Boolean(quality || language || year);
 
   return (
     <>
