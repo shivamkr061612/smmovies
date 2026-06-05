@@ -118,13 +118,16 @@ export default function Header({ searchValue, onSearch, onMenuClick, onLogoClick
                   type="button"
                   onClick={() => setShowFilter((v) => !v)}
                   aria-label="Filters"
-                  className={`flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg transition-colors ${
-                    showFilter || quality
+                  className={`relative flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg transition-colors ${
+                    showFilter || hasActiveFilter
                       ? "bg-red-500/30 text-white"
                       : "text-slate-300 hover:bg-white/10 hover:text-white"
                   }`}
                 >
                   <SlidersHorizontal className="h-3.5 w-3.5" strokeWidth={2.4} />
+                  {hasActiveFilter && (
+                    <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-red-400 ring-2 ring-[#0a0a0a]" />
+                  )}
                 </button>
                 <button
                   type="button"
@@ -133,6 +136,8 @@ export default function Header({ searchValue, onSearch, onMenuClick, onLogoClick
                     setOpen(false);
                     setShowFilter(false);
                     setQuality("");
+                    setLanguage("");
+                    setYear("");
                   }}
                   aria-label="Close search"
                   className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
@@ -144,26 +149,50 @@ export default function Header({ searchValue, onSearch, onMenuClick, onLogoClick
           </div>
         </div>
 
-        {/* Filter chips */}
+        {/* Filter panel */}
         {open && showFilter && (
           <div className="border-t border-white/10 bg-[#0a0a0a]/95 backdrop-blur-xl">
-            <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-2 px-3 py-2.5 sm:px-4">
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-                Quality:
-              </span>
-              {["", "480p", "720p", "1080p", "4K", "HEVC", "Dual Audio"].map((q) => (
+            <div className="mx-auto max-w-7xl space-y-2.5 px-3 py-3 sm:px-4">
+              <FilterRow
+                label="Quality"
+                value={quality}
+                onChange={setQuality}
+                options={["", "480p", "720p", "1080p", "4K", "HEVC", "10Bit"]}
+              />
+              <FilterRow
+                label="Language"
+                value={language}
+                onChange={setLanguage}
+                options={["", "Hindi", "English", "Dual Audio", "Tamil", "Telugu", "Malayalam", "Punjabi"]}
+              />
+              <FilterRow
+                label="Year"
+                value={year}
+                onChange={setYear}
+                options={["", "2026", "2025", "2024", "2023", "2022", "2021"]}
+              />
+              <div className="flex items-center justify-between pt-1">
+                {hasActiveFilter ? (
+                  <button
+                    onClick={() => {
+                      setQuality("");
+                      setLanguage("");
+                      setYear("");
+                    }}
+                    className="text-[11px] font-bold uppercase tracking-wider text-red-300 hover:text-red-200"
+                  >
+                    Clear filters
+                  </button>
+                ) : (
+                  <span />
+                )}
                 <button
-                  key={q || "any"}
-                  onClick={() => setQuality(q)}
-                  className={`rounded-full border px-3 py-1 text-xs font-semibold transition-all ${
-                    quality === q
-                      ? "border-red-400/60 bg-red-500/20 text-white"
-                      : "border-white/10 bg-white/[0.04] text-slate-300 hover:border-white/25 hover:text-white"
-                  }`}
+                  onClick={() => submitSearch(searchValue)}
+                  className="rounded-full bg-gradient-to-r from-red-600 to-red-500 px-4 py-1.5 text-xs font-bold text-white shadow-md shadow-red-600/30 transition-all hover:scale-[1.03] active:scale-95"
                 >
-                  {q || "Any"}
+                  Apply
                 </button>
-              ))}
+              </div>
             </div>
           </div>
         )}
