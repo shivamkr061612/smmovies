@@ -20,16 +20,8 @@ jobs:
       - name: Build
         run: bun run build
 
-      - name: Verify build output
-        run: |
-          echo "=== Build output structure ==="
-          ls -la .output/ || echo "No .output directory found!"
-          ls -la .output/server/ || echo "No .output/server directory!"
-          ls -la .output/public/ || echo "No .output/public directory!"
-
       - name: Deploy to Cloudflare Workers
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CF_API_TOKEN }}
-          accountId: ${{ secrets.CF_ACCOUNT_ID }}
-          command: deploy --compatibility-date 2024-11-01
+        run: npx wrangler@3 deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
