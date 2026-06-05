@@ -1,5 +1,9 @@
 name = "smmovies"
-main = "src/server.ts"
+main = ".output/server/index.mjs"
 compatibility_date = "2024-11-01"
 compatibility_flags = ["nodejs_compat"]
 workers_dev = true
+
+[assets]
+directory = ".output/public"
+binding = "ASSETS"
