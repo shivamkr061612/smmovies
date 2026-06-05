@@ -72,6 +72,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "google-site-verification", content: "-rBQWMix3xaD6CLpP-_wyKFqesEOKdGK8hipPrxSQgo" },
       { title: "SM Movies" },
       { name: "description", content: "SM Movies is your ultimate entertainment hub to stream the latest movies, web series, anime, and TV shows in HD, Full HD, and 4K quality with a fast, smooth, an" },
       { name: "author", content: "Lovable" },
