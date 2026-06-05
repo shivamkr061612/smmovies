@@ -35,22 +35,25 @@ export default function WelcomePopup() {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-end justify-center overflow-y-auto bg-black/80 p-3 backdrop-blur-md sm:items-center sm:p-4">
-      <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-red-500/30 bg-gradient-to-br from-[#1a0707] via-[#0a0a0a] to-[#100303] shadow-2xl shadow-red-900/40 ring-1 ring-white/5 animate-in fade-in zoom-in-95 duration-300">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 backdrop-blur-md">
+      
+      {/* Main Card Wrapper - Made responsive with max-h and internal scrolling */}
+      <div className="relative w-full max-w-md max-h-[90dvh] overflow-y-auto rounded-3xl border border-red-500/30 bg-gradient-to-br from-[#1a0707] via-[#0a0a0a] to-[#100303] shadow-2xl shadow-red-900/40 ring-1 ring-white/5 animate-in fade-in zoom-in-95 duration-300 custom-scrollbar">
+        
         {/* Glow */}
         <div className="pointer-events-none absolute -top-24 left-1/2 h-48 w-48 -translate-x-1/2 rounded-full bg-red-600/30 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-24 right-0 h-40 w-40 rounded-full bg-red-700/20 blur-3xl" />
 
-        {/* Close */}
+        {/* Close Button - Made sticky so it stays visible even if user scrolls inside the popup */}
         <button
           onClick={close}
           aria-label="Close"
-          className="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-black/50 text-slate-300 backdrop-blur transition-all hover:border-red-400/40 hover:bg-red-500/20 hover:text-white"
+          className="absolute right-3 top-3 z-20 flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-black/50 text-slate-300 backdrop-blur transition-all hover:border-red-400/40 hover:bg-red-500/20 hover:text-white"
         >
           <X className="h-4 w-4" strokeWidth={2.5} />
         </button>
 
-        <div className="relative px-6 pb-6 pt-7 sm:px-7 sm:pt-8">
+        <div className="relative px-5 pb-6 pt-8 sm:px-7 sm:pt-8">
           {/* Logo */}
           <div className="mb-4 flex justify-center">
             {SITE_LOGO ? (
@@ -73,7 +76,7 @@ export default function WelcomePopup() {
             <h2 className="mt-2 text-2xl font-black text-white sm:text-[26px]">
               Hello Movie Lover! <span className="inline-block animate-bounce">👋</span>
             </h2>
-            <p className="mt-2.5 text-[13.5px] leading-relaxed text-slate-300 sm:text-sm">
+            <p className="mt-2.5 text-[13px] leading-relaxed text-slate-300 sm:text-sm">
               Hamari website <span className="font-bold text-white">bilkul nayi</span> hai aur
               hum har din ise behtar bana rahe hain. Aapka pyaar aur support hi humari
               taqat hai <Heart className="inline h-3.5 w-3.5 fill-red-500 text-red-500" />
@@ -89,7 +92,7 @@ export default function WelcomePopup() {
               <p className="text-[11px] font-bold uppercase tracking-wider text-amber-300">
                 Important Note
               </p>
-              <p className="mt-1 text-[12.5px] leading-relaxed text-slate-200">
+              <p className="mt-1 text-[12px] leading-relaxed text-slate-200">
                 Yeh website kabhi bhi band ho sakti hai. Aapko update milte rahein iske liye
                 hamare <span className="font-bold text-white">WhatsApp Channel</span> ko zaroor join karein.
               </p>
@@ -109,6 +112,7 @@ export default function WelcomePopup() {
             <ExternalLink className="h-3.5 w-3.5 opacity-80 transition-transform group-hover:translate-x-0.5" strokeWidth={2.6} />
           </a>
 
+          {/* Cleaned up Maybe Later button */}
           <button
             onClick={close}
             className="mt-2.5 w-full rounded-xl px-4 py-2 text-xs font-semibold text-slate-400 transition-colors hover:text-white"
