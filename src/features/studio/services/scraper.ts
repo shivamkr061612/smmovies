@@ -37,6 +37,49 @@ async function fetchWithProxy(url: string, proxyIndex = 0): Promise<string> {
   }
 }
 
+function normalizeMediaUrl(raw: string): string {
+  const trimmed = (raw || "").trim();
+  if (!trimmed || trimmed.startsWith("data:") || trimmed.startsWith("blob:")) return "";
+  const absolute = trimmed.startsWith("//")
+    ? `https:${trimmed}`
+    : trimmed.startsWith("/")
+    ? `${BASE_URL.replace(/\/$/, "")}${trimmed}`
+    : trimmed;
+
+  try {
+    const url = new URL(absolute);
+    // catimages.org is not resolving reliably on phones/hosting. catimages.co
+    // serves the same image paths, so swap mirrors before rendering.
+    if (/^(www\.)?catimages\.(org|to|net|cc|in)$/i.test(url.hostname)) {
+      url.hostname = "catimages.co";
+      return url.toString();
+    }
+    return url.toString();
+  } catch {
+    return absolute;
+  }
+}
+
+function imageFromElement(img: HTMLImageElement): string {
+  const attrs = [
+    "data-src",
+    "data-lazy-src",
+    "data-original",
+    "data-orig-file",
+    "data-medium-file",
+    "data-large-file",
+    "src",
+  ];
+  for (const attr of attrs) {
+    const value = normalizeMediaUrl(img.getAttribute(attr) || "");
+    if (value) return value;
+  }
+
+  const srcset = img.getAttribute("data-srcset") || img.getAttribute("srcset") || "";
+  const first = srcset.split(",")[0]?.trim().split(/\s+/)[0] || "";
+  return normalizeMediaUrl(first);
+}
+
 // Convert a moviesdrives URL into our internal slug
 export function urlToSlug(url: string): string {
   try {
@@ -109,7 +152,7 @@ function parseListingHTML(html: string): {
         const qualityEl = card.querySelector(".poster-quality, span.poster-quality");
 
         const title = titleEl?.textContent?.trim() || imgEl?.getAttribute("alt")?.trim() || "";
-        const imageUrl = imgEl?.getAttribute("src") || imgEl?.getAttribute("data-src") || "";
+        const imageUrl = imgEl ? imageFromElement(imgEl as HTMLImageElement) : "";
         const href = anchor.getAttribute("href") || "";
         const quality = qualityEl?.textContent?.trim() || "";
 
@@ -134,7 +177,7 @@ function parseListingHTML(html: string): {
     if (movies.length === 0) {
       const images = doc.querySelectorAll("img");
       images.forEach((img) => {
-        const src = img.getAttribute("src") || img.getAttribute("data-src") || "";
+        const src = imageFromElement(img as HTMLImageElement);
         const alt = img.getAttribute("alt") || "";
         if (!src || src.includes("logo") || src.includes("icon")) return;
 
@@ -231,8 +274,9 @@ export async function fetchListing(
           .map((it) => {
             if (!it) return null;
             const title = it.post_title || it.title || it.name || it.t || "";
-            const imageUrl =
-              it.post_thumbnail || it.post_thumbnail_url || it.post_thumb || it.thumb || it.poster || it.image || it.img || it.imageUrl || "";
+            const imageUrl = normalizeMediaUrl(
+              it.post_thumbnail || it.post_thumbnail_url || it.post_thumb || it.thumb || it.poster || it.image || it.img || it.imageUrl || ""
+            );
             let downloadUrl = it.permalink || it.link || it.url || it.download || "";
             // If permalink is relative (starts with /), prefix with BASE_URL
             if (downloadUrl && downloadUrl.startsWith("/")) {
@@ -361,12 +405,15 @@ export async function fetchPostContent(slug: string): Promise<PostContent> {
     // Extract images
     const imgs = clone.querySelectorAll("img");
     imgs.forEach((img, i) => {
-      const src = img.getAttribute("src") || img.getAttribute("data-src") || "";
+      const src = imageFromElement(img as HTMLImageElement);
       if (!src) return;
       if (i === 0) imageUrl = src;
       else screenshots.push(src);
       // Normalize lazy images
-      if (img.getAttribute("data-src")) img.setAttribute("src", src);
+      img.setAttribute("src", src);
+      img.removeAttribute("srcset");
+      img.removeAttribute("data-srcset");
+      img.removeAttribute("data-lazy-src");
     });
 
     // Extract download links - look for anchors with relevant text or URLs
@@ -393,7 +440,7 @@ export async function fetchPostContent(slug: string): Promise<PostContent> {
   // Featured image fallback
   if (!imageUrl) {
     const featured = doc.querySelector(".post-thumbnail img, .featured-image img, article img");
-    imageUrl = featured?.getAttribute("src") || featured?.getAttribute("data-src") || "";
+    imageUrl = featured ? imageFromElement(featured as HTMLImageElement) : "";
   }
 
   return {
