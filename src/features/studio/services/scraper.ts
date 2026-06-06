@@ -404,12 +404,15 @@ export async function fetchPostContent(slug: string): Promise<PostContent> {
     // Extract images
     const imgs = clone.querySelectorAll("img");
     imgs.forEach((img, i) => {
-      const src = img.getAttribute("src") || img.getAttribute("data-src") || "";
+      const src = imageFromElement(img as HTMLImageElement);
       if (!src) return;
       if (i === 0) imageUrl = src;
       else screenshots.push(src);
       // Normalize lazy images
-      if (img.getAttribute("data-src")) img.setAttribute("src", src);
+      img.setAttribute("src", src);
+      img.removeAttribute("srcset");
+      img.removeAttribute("data-srcset");
+      img.removeAttribute("data-lazy-src");
     });
 
     // Extract download links - look for anchors with relevant text or URLs
@@ -436,7 +439,7 @@ export async function fetchPostContent(slug: string): Promise<PostContent> {
   // Featured image fallback
   if (!imageUrl) {
     const featured = doc.querySelector(".post-thumbnail img, .featured-image img, article img");
-    imageUrl = featured?.getAttribute("src") || featured?.getAttribute("data-src") || "";
+    imageUrl = featured ? imageFromElement(featured as HTMLImageElement) : "";
   }
 
   return {
