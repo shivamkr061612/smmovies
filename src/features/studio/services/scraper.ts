@@ -274,8 +274,9 @@ export async function fetchListing(
           .map((it) => {
             if (!it) return null;
             const title = it.post_title || it.title || it.name || it.t || "";
-            const imageUrl =
-              it.post_thumbnail || it.post_thumbnail_url || it.post_thumb || it.thumb || it.poster || it.image || it.img || it.imageUrl || "";
+            const imageUrl = normalizeMediaUrl(
+              it.post_thumbnail || it.post_thumbnail_url || it.post_thumb || it.thumb || it.poster || it.image || it.img || it.imageUrl || ""
+            );
             let downloadUrl = it.permalink || it.link || it.url || it.download || "";
             // If permalink is relative (starts with /), prefix with BASE_URL
             if (downloadUrl && downloadUrl.startsWith("/")) {
