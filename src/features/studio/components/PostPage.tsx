@@ -296,6 +296,28 @@ export default function PostPage({
               dangerouslySetInnerHTML={{ __html: post.bodyHtml }}
             />
 
+            {/* Screenshots gallery (always shown if available) */}
+            {post.screenshots && post.screenshots.length > 0 && (
+              <div className="mt-6 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
+                <h3 className="mb-3 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-200">
+                  <Sparkles className="h-4 w-4 text-red-400" strokeWidth={2.4} />
+                  Screenshots
+                </h3>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  {post.screenshots.map((src, i) => (
+                    <img
+                      key={i}
+                      src={src}
+                      alt={`Screenshot ${i + 1}`}
+                      loading="lazy"
+                      className="h-auto w-full rounded-xl border border-white/10 object-cover shadow-lg"
+                      onError={(e) => ((e.currentTarget as HTMLImageElement).style.display = "none")}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Native banner between body and quick downloads */}
             <NativeBanner className="my-6" />
 
