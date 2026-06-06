@@ -121,6 +121,7 @@ export default function WelcomePopup() {
           </button>
         </div>
       </div>
+      </div>
     </div>
   );
 }
