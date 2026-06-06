@@ -35,10 +35,10 @@ export default function WelcomePopup() {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 backdrop-blur-md">
-      
-      {/* Main Card Wrapper - Made responsive with max-h and internal scrolling */}
-      <div className="relative w-full max-w-md max-h-[90dvh] overflow-y-auto rounded-3xl border border-red-500/30 bg-gradient-to-br from-[#1a0707] via-[#0a0a0a] to-[#100303] shadow-2xl shadow-red-900/40 ring-1 ring-white/5 animate-in fade-in zoom-in-95 duration-300 custom-scrollbar">
+    <div className="fixed inset-0 z-[100] overflow-y-auto bg-black/80 backdrop-blur-md">
+      <div className="flex min-h-full items-center justify-center p-3 sm:p-4">
+        {/* Main Card Wrapper */}
+        <div className="relative my-auto w-full max-w-md rounded-3xl border border-red-500/30 bg-gradient-to-br from-[#1a0707] via-[#0a0a0a] to-[#100303] shadow-2xl shadow-red-900/40 ring-1 ring-white/5 animate-in fade-in zoom-in-95 duration-300">
         
         {/* Glow */}
         <div className="pointer-events-none absolute -top-24 left-1/2 h-48 w-48 -translate-x-1/2 rounded-full bg-red-600/30 blur-3xl" />
@@ -120,6 +120,7 @@ export default function WelcomePopup() {
             Maybe later
           </button>
         </div>
+      </div>
       </div>
     </div>
   );

@@ -61,26 +61,26 @@ export default function Header({ searchValue, onSearch, onMenuClick, onLogoClick
             <Menu className="h-5 w-5" strokeWidth={2.4} />
           </button>
 
-          {/* Logo */}
+          {/* Logo + Brand text (always visible) */}
           <button
             onClick={onLogoClick}
-            className={`flex flex-shrink-0 items-center transition-all active:scale-95 ${
+            className={`flex min-w-0 flex-shrink items-center gap-2 transition-all active:scale-95 ${
               open ? "hidden sm:flex" : "flex"
             }`}
             aria-label="Home"
           >
             {SITE_LOGO ? (
-              <img src={SITE_LOGO} alt={SITE_TITLE || SITE_NAME || "logo"} className="h-8 object-contain" />
-            ) : (
-              <div className="flex items-baseline gap-1">
-                <span className="text-base font-black tracking-tight text-white sm:text-lg">
-                  {(SITE_NAME || "SM Movies").split(" ")[0]}
-                </span>
-                <span className="text-base font-black tracking-tight text-red-600 sm:text-lg">
-                  {(SITE_NAME || "SM Movies").split(" ").slice(1).join(" ")}
-                </span>
-              </div>
-            )}
+              <img
+                src={SITE_LOGO}
+                alt={SITE_TITLE || SITE_NAME || "logo"}
+                className="h-8 w-8 flex-shrink-0 rounded-lg object-contain"
+                onError={(e) => ((e.currentTarget as HTMLImageElement).style.display = "none")}
+              />
+            ) : null}
+            <div className="flex items-baseline gap-1 truncate">
+              <span className="truncate text-base font-black tracking-tight text-white sm:text-lg">SM</span>
+              <span className="truncate text-base font-black tracking-tight text-red-500 sm:text-lg">Movies</span>
+            </div>
           </button>
 
           {/* Spacer */}
