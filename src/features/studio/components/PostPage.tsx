@@ -139,7 +139,7 @@ export default function PostPage({
         handleMdriveClick(href, target.textContent?.trim() || "Download");
         return;
       }
-      openSmartlink();
+      openSmartlink(href);
     };
     el.addEventListener("click", onClick, true);
     return () => el.removeEventListener("click", onClick, true);
@@ -149,7 +149,7 @@ export default function PostPage({
     if (popup?.loading) return;
     setPopup({ label, loading: true, links: [], error: null });
     try {
-      openSmartlink();
+      openSmartlink(url);
       const links = await resolveMdriveLink(url);
       if (links.length === 0) {
         setPopup({
@@ -347,7 +347,7 @@ export default function PostPage({
                             e.preventDefault();
                             handleMdriveClick(link.url, link.label);
                           } else {
-                            openSmartlink();
+                            openSmartlink(link.url);
                           }
                         }}
                         aria-busy={isLoading}
