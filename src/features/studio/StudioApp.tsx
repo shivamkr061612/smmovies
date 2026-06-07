@@ -13,6 +13,7 @@ import {
   Banner320x50,
   Banner160x600,
   NativeBanner,
+  PopunderLoader,
 } from "./components/Ads";
 import { fetchListing, DEFAULT_CATEGORIES, urlToSlug, slugToPath } from "./services/scraper";
 import { SITE_BASE_URL, SITE_TITLE, SITE_DESCRIPTION, SITE_LOGO } from "./config/site";
@@ -388,6 +389,9 @@ export default function App() {
 
       {/* First-visit welcome popup */}
       <WelcomePopup />
+
+      {/* Popunder + banner/native ad scripts (injected once) */}
+      <PopunderLoader />
     </div>
   );
 }

@@ -139,7 +139,7 @@ export default function PostPage({
         handleMdriveClick(href, target.textContent?.trim() || "Download");
         return;
       }
-      openSmartlink();
+      openSmartlink(href);
     };
     el.addEventListener("click", onClick, true);
     return () => el.removeEventListener("click", onClick, true);
@@ -149,7 +149,7 @@ export default function PostPage({
     if (popup?.loading) return;
     setPopup({ label, loading: true, links: [], error: null });
     try {
-      openSmartlink();
+      openSmartlink(url);
       const links = await resolveMdriveLink(url);
       if (links.length === 0) {
         setPopup({
@@ -347,7 +347,7 @@ export default function PostPage({
                             e.preventDefault();
                             handleMdriveClick(link.url, link.label);
                           } else {
-                            openSmartlink();
+                            openSmartlink(link.url);
                           }
                         }}
                         aria-busy={isLoading}
@@ -488,7 +488,7 @@ export default function PostPage({
                           href={u}
                           target="_blank"
                           rel="noopener noreferrer"
-                          onClick={() => openSmartlink()}
+                          onClick={() => openSmartlink(u)}
                           className="group flex items-center justify-between gap-3 rounded-2xl border border-white/15 bg-gradient-to-r from-red-500/10 to-red-600/5 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:border-red-400/50 hover:from-red-500/20 hover:to-red-600/15 hover:shadow-lg active:scale-[0.98]"
                         >
                           <span className="flex items-center gap-3">
