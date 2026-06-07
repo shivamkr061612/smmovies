@@ -8,21 +8,12 @@ export default function WelcomePopup() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    try {
-      if (!localStorage.getItem(STORAGE_KEY)) {
-        const t = setTimeout(() => setOpen(true), 600);
-        return () => clearTimeout(t);
-      }
-    } catch {
-      setOpen(true);
-    }
+    const t = setTimeout(() => setOpen(true), 600);
+    return () => clearTimeout(t);
   }, []);
 
   const close = () => {
     setOpen(false);
-    try {
-      localStorage.setItem(STORAGE_KEY, "1");
-    } catch {}
   };
 
   useEffect(() => {
