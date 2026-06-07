@@ -1,0 +1,12 @@
+{
+  "name": "SM Movies",
+  "short_name": "SM Movies",
+  "description": "Download latest movies & web series in HD, 4K",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#dc2626",
+  "icons": [
+    { "src": "/logo.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

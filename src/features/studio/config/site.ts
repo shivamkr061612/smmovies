@@ -2,7 +2,7 @@
 // This file supports runtime overrides via `window.__SITE_CONFIG` so you can
 // set values in `index.html` or a small JSON file without rebuilding.
 
-import logoAsset from "@/assets/sm-movies-logo.png.asset.json";
+const logoAsset = { url: "/logo.png" };
 
 declare global {
   interface Window {
