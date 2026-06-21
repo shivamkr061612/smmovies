@@ -2,9 +2,10 @@ import type { Movie, ScrapeResult, Category, PostContent } from "../types";
 import { SITE_BASE_URL as BASE_URL, TELEGRAM_URL } from "../config/site";
 
 const PROXIES = [
-  (url: string) => `https://mag.dhanjeerider.workers.dev/?url=${encodeURIComponent(url)}`,
-  (url: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+  (url: string) => `/api/public/proxy?url=${encodeURIComponent(url)}`,
   (url: string) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+  (url: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+  (url: string) => `https://mag.dhanjeerider.workers.dev/?url=${encodeURIComponent(url)}`,
 ];
 
 async function fetchWithProxy(url: string, proxyIndex = 0): Promise<string> {
