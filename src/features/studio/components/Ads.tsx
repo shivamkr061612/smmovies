@@ -8,9 +8,9 @@ export const SMARTLINK_URL = "https://omg10.com/4/11112237";
 const MAX_PER_KEY = 3;
 
 const POPUNDER_SRC = "https://al5sm.com/tag.min.js";
-const POPUNDER_ZONE = "11112227";
-const BANNER_SRC = "https://nap5k.com/tag.min.js";
-const BANNER_ZONE = "11112232";
+const POPUNDER_ZONE = "11198492";
+const BANNER_SRC = "https://al5sm.com/tag.min.js";
+const BANNER_ZONE = "11198492";
 
 // Per-button click counter (session-scoped, in-memory).
 const clickCounts = new Map<string, number>();
