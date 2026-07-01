@@ -1,5 +1,11 @@
 import { useState, useEffect, useRef } from "react";
-import { ArrowLeft, Share2, Calendar, Download, ArrowRight, Sparkles, X, Cloud, HardDrive, Link as LinkIcon, Loader2 } from "lucide-react";
+import { ArrowLeft, Share2, Calendar, Download, ArrowRight, Sparkles, X, Cloud, HardDrive, Link as LinkIcon, Loader2, Tv } from "lucide-react";
+
+const EP_REGEX = /(S\d{1,2}\s*E\d{1,3}|Season\s*\d{1,2}\s*Episode\s*\d{1,3}|Episode\s*\d{1,3}|EP\s*\d{1,3}|E\d{1,3})/i;
+function extractEpisode(label: string): string | null {
+  const m = label?.match(EP_REGEX);
+  return m ? m[0].toUpperCase().replace(/\s+/g, "") : null;
+}
 import { fetchPostContent, slugToPath, resolveMdriveLink, isMdriveLink } from "../services/scraper";
 import { POST_LOGOS_TOP, POST_LOGOS_BOTTOM, SITE_BASE_URL, SITE_TITLE, SITE_DESCRIPTION, SITE_LOGO } from "../config/site";
 import type { PostContent } from "../types";
