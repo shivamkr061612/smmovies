@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { Flame, FileVideo, RefreshCw, Loader2 } from "lucide-react";
 import Header from "./components/Header";
 import SideMenu from "./components/SideMenu";
 import HeroSlider from "./components/HeroSlider";
