@@ -443,12 +443,27 @@ export async function fetchPostContent(slug: string): Promise<PostContent> {
       }
     });
 
+    // Unwrap <noscript> images (many WP lazy-load plugins hide real <img> here)
+    clone.querySelectorAll("noscript").forEach((ns) => {
+      const html = ns.innerHTML || "";
+      if (/<img/i.test(html)) {
+        const wrapper = doc.createElement("div");
+        wrapper.innerHTML = html;
+        ns.replaceWith(...Array.from(wrapper.childNodes));
+      }
+    });
+
     // Extract images
     const imgs = clone.querySelectorAll("img");
+    const seenImg = new Set<string>();
     imgs.forEach((img, i) => {
       const src = imageFromElement(img as HTMLImageElement);
       if (!src) return;
-      if (i === 0) imageUrl = src;
+      // Skip tiny/logo/icon images
+      if (/logo|icon|spinner|avatar|smiley|emoji/i.test(src)) return;
+      if (seenImg.has(src)) return;
+      seenImg.add(src);
+      if (!imageUrl) imageUrl = src;
       else screenshots.push(src);
       // Normalize lazy images
       img.setAttribute("src", src);
