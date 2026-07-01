@@ -387,10 +387,11 @@ export default function PostPage({
                   {popup.label}
                 </h4>
                 {(() => {
-                  const m = popup.label.match(/(S\d{1,2}\s*E\d{1,3}|Episode\s*\d{1,3}|EP\s*\d{1,3}|E\d{1,3})/i);
-                  return m ? (
-                    <span className="mt-1.5 inline-flex items-center gap-1 rounded-md border border-red-400/30 bg-red-500/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-red-200">
-                      📺 {m[0].toUpperCase()}
+                  const ep = extractEpisode(popup.label);
+                  return ep ? (
+                    <span className="mt-1.5 inline-flex items-center gap-1.5 rounded-md border border-red-400/30 bg-red-500/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-red-200">
+                      <Tv className="h-3 w-3" strokeWidth={2.5} />
+                      {ep}
                     </span>
                   ) : null;
                 })()}
