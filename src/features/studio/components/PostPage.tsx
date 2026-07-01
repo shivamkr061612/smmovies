@@ -444,8 +444,18 @@ export default function PostPage({
                             </span>
                             <span className="flex flex-col">
                               <span>{name}</span>
-                              <span className="text-[10px] font-normal text-slate-400">
-                                Fast Download
+                              <span className="text-[10px] font-normal text-slate-400 inline-flex items-center gap-1">
+                                {(() => {
+                                  const ep = extractEpisode(popup.label);
+                                  return ep ? (
+                                    <>
+                                      <Tv className="h-2.5 w-2.5" strokeWidth={2.5} />
+                                      <span className="font-bold text-red-300">{ep}</span>
+                                      <span>·</span>
+                                    </>
+                                  ) : null;
+                                })()}
+                                <span>Fast Download</span>
                               </span>
                             </span>
                           </span>
