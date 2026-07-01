@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { Flame, FileVideo, RefreshCw, Loader2 } from "lucide-react";
 import Header from "./components/Header";
 import SideMenu from "./components/SideMenu";
 import HeroSlider from "./components/HeroSlider";
@@ -296,12 +297,14 @@ export default function App() {
 
             {/* Section heading */}
             <div className="flex items-center justify-between gap-3 px-1 pt-2">
-              <h2 className="flex items-center gap-2 text-xl font-extrabold text-white sm:text-2xl">
-                <span className="text-2xl sm:text-3xl">🔥</span>
+              <h2 className="flex items-center gap-2.5 text-xl font-extrabold tracking-tight text-white sm:text-2xl">
+                <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-red-400/30 bg-red-500/10 text-red-300 shadow-inner shadow-red-500/10 backdrop-blur-md">
+                  <Flame className="h-4.5 w-4.5" strokeWidth={2.4} />
+                </span>
                 {listHeading}
               </h2>
               {view.type === "list" && !searchQuery && (
-                <span className="text-xs font-medium text-slate-400 sm:text-sm">
+                <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-slate-300 backdrop-blur-md">
                   Page {currentPage}
                 </span>
               )}
@@ -309,20 +312,21 @@ export default function App() {
 
             {/* Status */}
             {loading && (
-              <div className="flex items-center gap-2 text-sm text-slate-400">
-                <span className="h-3 w-3 animate-spin rounded-full border-2 border-red-500 border-r-transparent" />
-                Loading...
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-medium text-slate-300 backdrop-blur-md">
+                <Loader2 className="h-3.5 w-3.5 animate-spin text-red-400" strokeWidth={2.4} />
+                Loading…
               </div>
             )}
 
             {/* Error */}
             {error && !loading && (
-              <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-6 text-center">
-                <p className="text-sm text-red-300">{error}</p>
+              <div className="rounded-2xl border border-red-500/20 bg-red-500/[0.06] p-6 text-center backdrop-blur-md">
+                <p className="text-sm text-red-200">{error}</p>
                 <button
                   onClick={() => fetchData(currentPage, selectedCategory, searchQuery)}
-                  className="mt-3 rounded-lg bg-red-500/10 px-4 py-2 text-sm font-medium text-red-300 ring-1 ring-red-500/20 transition-colors hover:bg-red-500/20"
+                  className="mt-3 inline-flex items-center gap-2 rounded-lg border border-red-400/30 bg-red-500/15 px-4 py-2 text-sm font-semibold text-red-100 backdrop-blur-md transition-colors hover:bg-red-500/25"
                 >
+                  <RefreshCw className="h-3.5 w-3.5" strokeWidth={2.4} />
                   Retry
                 </button>
               </div>
@@ -346,15 +350,15 @@ export default function App() {
 
             {/* Empty state */}
             {!loading && !error && movies.length === 0 && (
-              <div className="py-20 text-center">
-                <div className="mx-auto mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-slate-800/50 text-4xl">
-                  🎞️
+              <div className="mx-auto max-w-md rounded-3xl border border-white/10 bg-white/[0.03] p-10 text-center backdrop-blur-xl">
+                <div className="mx-auto mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.05] text-red-300 shadow-inner shadow-red-500/10">
+                  <FileVideo className="h-7 w-7" strokeWidth={2.2} />
                 </div>
-                <h3 className="text-lg font-semibold text-slate-300">No movies found</h3>
-                <p className="mt-2 text-sm text-slate-500">
+                <h3 className="text-base font-semibold text-slate-200">No results found</h3>
+                <p className="mt-2 text-sm text-slate-400">
                   {searchQuery
-                    ? "Try a different search term."
-                    : "Try a different category or check back later."}
+                    ? "Try a different search term or adjust your filters."
+                    : "Try a different category or check back shortly."}
                 </p>
               </div>
             )}

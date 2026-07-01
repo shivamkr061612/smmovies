@@ -248,28 +248,41 @@ export async function fetchListing(
     const apiUrl = `${BASE_URL.replace(/\/$/, "")}/search.php?q=${encodeURIComponent(
       searchQuery
     )}&page=${page}`;
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 15000);
-      const res = await fetch(apiUrl, {
-        signal: controller.signal,
-        headers: {
-          Accept: "application/json, text/javascript, */*; q=0.01",
-          // mirror provided curl headers to improve compatibility
-          "User-Agent":
-            "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Mobile Safari/537.36",
-          Referer: `${BASE_URL.replace(/\/$/, "")}/search.html?q=${encodeURIComponent(searchQuery)}&page=${page}`,
-        },
-      });
-      clearTimeout(timeoutId);
+    // Route the JSON request through our proxy so CORS + redirects (new3 → new4)
+    // are handled server-side. Try our proxy first, then public fallbacks.
+    const jsonProxies = [
+      (u: string) => `/api/public/proxy?url=${encodeURIComponent(u)}`,
+      (u: string) => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+      (u: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+    ];
 
-      const contentType = res.headers.get("content-type") || "";
-      if (res.ok && contentType.includes("application/json")) {
-        const body = await res.json();
-        // body may be array or {data: []} or {results: []}
+    for (const wrap of jsonProxies) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
+        const res = await fetch(wrap(apiUrl), {
+          signal: controller.signal,
+          headers: { Accept: "application/json, text/javascript, */*; q=0.01" },
+        });
+        clearTimeout(timeoutId);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const text = await res.text();
+        let body: any;
+        try {
+          body = JSON.parse(text);
+        } catch {
+          throw new Error("Not JSON");
+        }
+
         const items: any[] = Array.isArray(body)
           ? body
-          : body?.data || body?.results || body?.items || (Array.isArray(body?.hits) ? body.hits.map((h: any) => h.document || h) : []) || [];
+          : body?.data ||
+            body?.results ||
+            body?.items ||
+            (Array.isArray(body?.hits) ? body.hits.map((h: any) => h.document || h) : []) ||
+            [];
+
+        if (!items.length) throw new Error("No results");
 
         const movies: Movie[] = items
           .map((it) => {
@@ -279,12 +292,13 @@ export async function fetchListing(
               it.post_thumbnail || it.post_thumbnail_url || it.post_thumb || it.thumb || it.poster || it.image || it.img || it.imageUrl || ""
             );
             let downloadUrl = it.permalink || it.link || it.url || it.download || "";
-            // If permalink is relative (starts with /), prefix with BASE_URL
             if (downloadUrl && downloadUrl.startsWith("/")) {
               downloadUrl = `${BASE_URL.replace(/\/$/, "")}${downloadUrl}`;
             }
             const id = it.id || downloadUrl || imageUrl || title;
-            const slug = (it.permalink && String(it.permalink).replace(/^\//, "").replace(/\/$/, "")) || (downloadUrl ? urlToSlug(downloadUrl) : it.slug || it.post_name || undefined);
+            const slug =
+              (it.permalink && String(it.permalink).replace(/^\//, "").replace(/\/$/, "")) ||
+              (downloadUrl ? urlToSlug(downloadUrl) : it.slug || it.post_name || undefined);
             return {
               id,
               title,
@@ -297,9 +311,7 @@ export async function fetchListing(
           })
           .filter(Boolean) as Movie[];
 
-        // crude pagination detection
-        const hasNext = items.length > 0 && items.length >= 10; // assume page size 10
-
+        const hasNext = items.length >= 10;
         return {
           movies,
           categories: DEFAULT_CATEGORIES,
@@ -308,10 +320,38 @@ export async function fetchListing(
           hasNext,
           hasPrev: page > 1,
         };
+      } catch (err) {
+        console.warn("Search JSON attempt failed:", err);
       }
+    }
+
+    // Final fallback: scrape the site's HTML search results page.
+    try {
+      const htmlSearchUrl =
+        page > 1
+          ? `${BASE_URL.replace(/\/$/, "")}/search.html?q=${encodeURIComponent(searchQuery)}&page=${page}`
+          : `${BASE_URL.replace(/\/$/, "")}/search.html?q=${encodeURIComponent(searchQuery)}`;
+      const html = await fetchWithProxy(htmlSearchUrl);
+      const { movies, categories } = parseListingHTML(html);
+      const pagination = extractPagination(html, page);
+      return {
+        movies,
+        categories: categories.length > 0 ? categories : DEFAULT_CATEGORIES,
+        currentPage: page,
+        totalPages: pagination.totalPages,
+        hasNext: pagination.hasNext,
+        hasPrev: pagination.hasPrev,
+      };
     } catch (err) {
-      // fall back to HTML parsing below
-      console.warn("JSON search failed, falling back to HTML parsing:", err);
+      console.warn("Search HTML fallback failed:", err);
+      return {
+        movies: [],
+        categories: DEFAULT_CATEGORIES,
+        currentPage: page,
+        totalPages: 1,
+        hasNext: false,
+        hasPrev: false,
+      };
     }
   }
 
