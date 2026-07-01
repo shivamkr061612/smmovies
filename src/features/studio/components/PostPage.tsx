@@ -321,66 +321,6 @@ export default function PostPage({
             {/* Native banner between body and quick downloads */}
             <NativeBanner className="my-6" />
 
-            {/* Quick download links section — iOS glass */}
-            {post.downloadLinks.length > 0 && (
-              <div className="mt-8 overflow-hidden rounded-3xl border border-white/15 bg-gradient-to-br from-red-500/15 via-red-500/10 to-red-700/10 p-5 shadow-xl backdrop-blur-2xl">
-                <h3 className="mb-4 flex items-center gap-2 text-base font-bold text-white">
-                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl border border-white/20 bg-white/10 backdrop-blur-xl">
-                    <Download className="h-4 w-4 text-white" strokeWidth={2.5} />
-                  </span>
-                  Quick Download Links
-                  <Sparkles className="h-4 w-4 text-red-300" strokeWidth={2.2} />
-                </h3>
-                {/* status banner removed — popup now shows resolved links */}
-                <div className="grid gap-2.5 sm:grid-cols-2">
-                  {post.downloadLinks.slice(0, 20).map((link, i) => {
-                    const mdrive = isMdriveLink(link.url);
-                    const isLoading = popup?.loading && popup.label === link.label;
-                    return (
-                      <a
-                        key={i}
-                        href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => {
-                          if (mdrive) {
-                            e.preventDefault();
-                            handleMdriveClick(link.url, link.label);
-                          } else {
-                            openSmartlink(link.url);
-                          }
-                        }}
-                        aria-busy={isLoading}
-                        className={`group flex items-center justify-between gap-3 rounded-2xl border border-white/15 bg-white/[0.08] px-4 py-3 text-sm font-medium text-slate-100 shadow-sm backdrop-blur-xl transition-all hover:-translate-y-0.5 hover:border-white/30 hover:bg-white/[0.16] hover:shadow-lg active:scale-[0.98] ${
-                          isLoading ? "pointer-events-none opacity-70" : ""
-                        }`}
-                      >
-                        <span className="flex min-w-0 flex-1 items-center gap-2.5">
-                          <span className="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg border border-white/15 bg-white/10 text-white">
-                            <Download className="h-3.5 w-3.5" strokeWidth={2.5} />
-                          </span>
-                          <span className="flex min-w-0 flex-col">
-                            <span className="line-clamp-2 break-words text-left">
-                              {isLoading ? "Generating…" : link.label}
-                            </span>
-                            {(() => {
-                              const m = link.label.match(/(S\d{1,2}\s*E\d{1,3}|Episode\s*\d{1,3}|EP\s*\d{1,3}|E\d{1,3})/i);
-                              return m ? (
-                                <span className="mt-0.5 inline-flex w-fit items-center rounded-md border border-red-400/30 bg-red-500/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-red-200">
-                                  {m[0].toUpperCase()}
-                                </span>
-                              ) : null;
-                            })()}
-                          </span>
-                        </span>
-                        <ArrowRight className="h-4 w-4 flex-shrink-0 text-white/60 transition-transform group-hover:translate-x-0.5 group-hover:text-white" strokeWidth={2.2} />
-                      </a>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
             {/* All categories (from listing) */}
             {categories && categories.length > 0 && (
               <div className="mt-8 rounded-2xl border border-white/5 bg-[#0a0a0a]/40 p-4">
