@@ -313,7 +313,7 @@ export async function fetchListing(
     // are handled server-side. Try our proxy first, then public fallbacks.
     const jsonProxies = [
       (u: string) => `/api/public/proxy?url=${encodeURIComponent(u)}`,
-      (u: string) => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+      
       (u: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
     ];
 
