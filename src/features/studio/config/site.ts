@@ -29,7 +29,20 @@ const readConfig = (key: string, altKey?: string) => {
 
 // Base URL of the source site used by the scraper (no trailing slash)
 export const SITE_BASE_URL =
-  readConfig("scraperUrl") || readConfig("SITE_BASE_URL") || "https://new3.moviesdrives.my";
+  readConfig("scraperUrl") || readConfig("SITE_BASE_URL") || "https://new6.moviesdrives.my";
+
+// Fallback mirrors tried automatically when the primary domain is down.
+export const SITE_MIRRORS: string[] =
+  readConfig("scraperMirrors") ||
+  readConfig("SITE_MIRRORS") || [
+    "https://new6.moviesdrives.my",
+    "https://new5.moviesdrives.my",
+    "https://new4.moviesdrives.my",
+    "https://new3.moviesdrives.my",
+    "https://moviesdrives.my",
+    "https://new6.moviesdrive.wiki",
+  ];
+
 
 // Site-level SEO values
 export const SITE_NAME = readConfig("siteName") || readConfig("SITE_NAME") || "SM Movies";
