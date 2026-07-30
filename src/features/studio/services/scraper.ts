@@ -1,42 +1,103 @@
 import type { Movie, ScrapeResult, Category, PostContent } from "../types";
-import { SITE_BASE_URL as BASE_URL, TELEGRAM_URL } from "../config/site";
+import { SITE_BASE_URL as BASE_URL, SITE_MIRRORS, TELEGRAM_URL } from "../config/site";
 
 const PROXIES = [
   (url: string) => `/api/public/proxy?url=${encodeURIComponent(url)}`,
-  (url: string) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
   (url: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
   (url: string) => `https://mag.dhanjeerider.workers.dev/?url=${encodeURIComponent(url)}`,
 ];
 
-async function fetchWithProxy(url: string, proxyIndex = 0): Promise<string> {
-  if (proxyIndex >= PROXIES.length) {
-    throw new Error("All retrieval protocols failed. Please try again shortly.");
-  }
+// The upstream site rotates domains (and sometimes goes offline entirely).
+// Keep an ordered list of mirrors and remember whichever one answers.
+const MIRROR_KEY = "sm_active_mirror";
+const MIRRORS: string[] = Array.from(
+  new Set([BASE_URL, ...SITE_MIRRORS].map((m) => m.replace(/\/$/, "")).filter(Boolean)),
+);
 
+function rememberedMirror(): string | null {
   try {
-    const proxyUrl = PROXIES[proxyIndex](url);
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 20000);
-
-    const response = await fetch(proxyUrl, {
-      signal: controller.signal,
-      headers: { Accept: "text/html,application/xhtml+xml,*/*" },
-    });
-    clearTimeout(timeoutId);
-
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-    const text = await response.text();
-    if (!text || text.length < 100) throw new Error("Empty response");
-    if (text.includes("502 Bad Gateway") || text.includes("origin is not allowed")) {
-      throw new Error("Proxy returned error");
-    }
-    return text;
-  } catch (err) {
-    console.warn(`Source ${proxyIndex + 1} failed:`, err);
-    return fetchWithProxy(url, proxyIndex + 1);
+    return sessionStorage.getItem(MIRROR_KEY);
+  } catch {
+    return null;
   }
 }
+
+function rememberMirror(base: string) {
+  try {
+    sessionStorage.setItem(MIRROR_KEY, base);
+  } catch {
+    /* noop */
+  }
+}
+
+function mirrorOrder(): string[] {
+  const saved = rememberedMirror();
+  if (saved && MIRRORS.includes(saved)) {
+    return [saved, ...MIRRORS.filter((m) => m !== saved)];
+  }
+  return MIRRORS;
+}
+
+function withBase(url: string, base: string): string {
+  try {
+    const target = new URL(url);
+    const next = new URL(base);
+    target.protocol = next.protocol;
+    target.host = next.host;
+    return target.toString();
+  } catch {
+    return url;
+  }
+}
+
+async function fetchOnce(url: string): Promise<string> {
+  let lastError: unknown = null;
+  for (let i = 0; i < PROXIES.length; i++) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 20000);
+      const response = await fetch(PROXIES[i](url), {
+        signal: controller.signal,
+        headers: { Accept: "text/html,application/xhtml+xml,*/*" },
+      });
+      clearTimeout(timeoutId);
+
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+      const text = await response.text();
+      if (!text || text.length < 100) throw new Error("Empty response");
+      if (text.includes("502 Bad Gateway") || text.includes("origin is not allowed")) {
+        throw new Error("Proxy returned error");
+      }
+      return text;
+    } catch (err) {
+      lastError = err;
+    }
+  }
+  throw lastError instanceof Error ? lastError : new Error("Fetch failed");
+}
+
+async function fetchWithProxy(url: string): Promise<string> {
+  const bases = mirrorOrder();
+  let lastError: unknown = null;
+  for (const base of bases) {
+    const candidate = withBase(url, base);
+    try {
+      const text = await fetchOnce(candidate);
+      rememberMirror(base);
+      return text;
+    } catch (err) {
+      lastError = err;
+      console.warn(`Mirror failed: ${base}`, err);
+    }
+  }
+  throw new Error(
+    `The source site is currently unreachable (${
+      lastError instanceof Error ? lastError.message : "network error"
+    }). Please try again shortly.`,
+  );
+}
+
 
 function normalizeMediaUrl(raw: string): string {
   const trimmed = (raw || "").trim();
@@ -252,7 +313,7 @@ export async function fetchListing(
     // are handled server-side. Try our proxy first, then public fallbacks.
     const jsonProxies = [
       (u: string) => `/api/public/proxy?url=${encodeURIComponent(u)}`,
-      (u: string) => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+      
       (u: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
     ];
 

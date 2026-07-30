@@ -313,7 +313,7 @@ body::-webkit-scrollbar-thumb:hover {
 }
 
 /* small tweak for close button contrast */
-.mobile-menu-panel .rounded-lg.p-1.5 {
+.mobile-menu-panel .rounded-lg.p-1\.5 {
   background: rgba(255,255,255,0.03);
 }
 
