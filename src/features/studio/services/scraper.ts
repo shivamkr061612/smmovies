@@ -1,8 +1,11 @@
 import type { Movie, ScrapeResult, Category, PostContent } from "../types";
 import { SITE_BASE_URL as BASE_URL, SITE_MIRRORS, TELEGRAM_URL } from "../config/site";
 
+const proxyUrl = (url: string) =>
+  `${import.meta.env.MODE === "cpanel" ? "/api/proxy.php" : "/api/public/proxy"}?url=${encodeURIComponent(url)}`;
+
 const PROXIES = [
-  (url: string) => `/api/public/proxy?url=${encodeURIComponent(url)}`,
+  proxyUrl,
   (url: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
   (url: string) => `https://mag.dhanjeerider.workers.dev/?url=${encodeURIComponent(url)}`,
 ];
@@ -312,7 +315,7 @@ export async function fetchListing(
     // Route the JSON request through our proxy so CORS + redirects (new3 → new4)
     // are handled server-side. Try our proxy first, then public fallbacks.
     const jsonProxies = [
-      (u: string) => `/api/public/proxy?url=${encodeURIComponent(u)}`,
+      proxyUrl,
       
       (u: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
     ];
