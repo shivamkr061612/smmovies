@@ -1,0 +1,14 @@
+Options -Indexes
+DirectoryIndex index.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Serve existing files (including /api/proxy.php) and folders as-is.
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Let the client-side app handle movie pages and other deep links.
+  RewriteRule ^ index.html [L]
+</IfModule>
