@@ -1,0 +1,29 @@
+name: Build cPanel upload package
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-cpanel:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build cPanel package
+        run: bun run build:cpanel
+
+      - name: Upload cPanel package
+        uses: actions/upload-artifact@v4
+        with:
+          name: sm-movies-cpanel
+          path: dist/cpanel/
+          if-no-files-found: error
