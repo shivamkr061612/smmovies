@@ -15,6 +15,7 @@ try {
 await rm(packageDir, { recursive: true, force: true });
 await cp(clientDir, packageDir, { recursive: true });
 await copyFile(shellPath, resolve(packageDir, "index.html"));
+await rm(resolve(packageDir, "_shell.html"), { force: true });
 await mkdir(resolve(packageDir, "api"), { recursive: true });
 await copyFile(resolve(root, "public/.htaccess"), resolve(packageDir, ".htaccess"));
 await copyFile(resolve(root, "public/api/proxy.php"), resolve(packageDir, "api/proxy.php"));

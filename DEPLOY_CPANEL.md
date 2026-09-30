@@ -13,6 +13,8 @@ npm run build:cpanel
 
 The ready-to-upload website is created at `dist/cpanel/`. The generated `index.html`, compiled assets, `.htaccess`, and `api/proxy.php` are all included together.
 
+The repository’s **Actions → Build cPanel upload package → Run workflow** also builds the same folder and makes it available as a downloadable `sm-movies-cpanel` artifact.
+
 ## Upload
 
 In cPanel File Manager, open `public_html` and upload **the contents** of `dist/cpanel/` (not the `cpanel` folder itself). Keep the `api` directory and `.htaccess` file in place. If cPanel hides dotfiles, enable “Show Hidden Files” before confirming `.htaccess` was uploaded.
