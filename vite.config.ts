@@ -6,21 +6,11 @@
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
-export default defineConfig(({ mode }) => ({
+export default defineConfig({
   nitro: true, // Force Nitro to run outside Lovable sandbox (needed for GitHub Actions)
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
     server: { entry: "server" },
-    ...(mode === "cpanel"
-      ? {
-          // Build a static client shell for Apache/LiteSpeed shared hosting.
-          spa: {
-            enabled: true,
-            maskPath: "/",
-            prerender: { outputPath: "/_shell", crawlLinks: false },
-          },
-        }
-      : {}),
   },
-}));
+});
