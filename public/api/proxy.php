@@ -5,11 +5,15 @@ declare(strict_types=1);
 // domains are accepted; arbitrary hosts and non-HTTP(S) URLs are rejected.
 function allowed_host(string $host): bool {
     $host = strtolower(rtrim($host, '.'));
-    return $host === 'mdrive.lol'
-        || $host === 'moviesdrive.christmas'
-        || str_ends_with($host, '.moviesdrive.christmas')
-        || $host === 'moviesdrives.my'
-        || str_ends_with($host, '.moviesdrives.my');
+    return in_array($host, [
+        'mdrive.lol',
+        'new1.moviesdrive.christmas',
+        'new2.moviesdrive.christmas',
+        'new3.moviesdrive.christmas',
+        'moviesdrive.christmas',
+        'new6.moviesdrives.my',
+        'new3.moviesdrives.my',
+    ], true);
 }
 
 function checked_url(string $url): ?array {
