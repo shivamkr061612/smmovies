@@ -26,4 +26,5 @@ jobs:
         with:
           name: sm-movies-cpanel
           path: dist/cpanel/
+          include-hidden-files: true
           if-no-files-found: error
