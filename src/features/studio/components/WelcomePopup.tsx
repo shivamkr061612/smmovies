@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Heart, MessageCircle, Sparkles, X, AlertTriangle, ExternalLink } from "lucide-react";
+import { Heart, MessageCircle, Sparkles, X, AlertTriangle, ExternalLink, Hand } from "lucide-react";
 import { SITE_LOGO, SITE_NAME, WHATSAPP_CHANNEL_URL } from "../config/site";
 
 const STORAGE_KEY = "sm_welcome_seen_v1";
@@ -65,7 +65,7 @@ export default function WelcomePopup() {
               Welcome to {SITE_NAME}
             </div>
             <h2 className="mt-2 text-2xl font-black text-white sm:text-[26px]">
-              Hello Movie Lover! <span className="inline-block animate-bounce">👋</span>
+              Hello Movie Lover! <Hand aria-hidden="true" className="ml-1 inline h-5 w-5 -translate-y-0.5 text-red-300" />
             </h2>
             <p className="mt-2.5 text-[13px] leading-relaxed text-slate-300 sm:text-sm">
               Hamari website <span className="font-bold text-white">bilkul nayi</span> hai aur
