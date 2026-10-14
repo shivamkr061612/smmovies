@@ -35,10 +35,10 @@ function rememberMirror(base: string) {
 
 function mirrorOrder(): string[] {
   const saved = rememberedMirror();
-  if (saved && MIRRORS.includes(saved)) {
-    return [saved, ...MIRRORS.filter((m) => m !== saved)];
-  }
-  return MIRRORS;
+  const preferredFallback = saved && MIRRORS.includes(saved) && saved !== BASE_URL
+    ? [saved]
+    : [];
+  return [BASE_URL, ...preferredFallback, ...MIRRORS.filter((m) => m !== BASE_URL && m !== saved)];
 }
 
 function withBase(url: string, base: string): string {
