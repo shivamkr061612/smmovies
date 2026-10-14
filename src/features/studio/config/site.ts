@@ -29,12 +29,13 @@ const readConfig = (key: string, altKey?: string) => {
 
 // Base URL of the source site used by the scraper (no trailing slash)
 export const SITE_BASE_URL =
-  readConfig("scraperUrl") || readConfig("SITE_BASE_URL") || "https://new1.moviesdrive.christmas";
+  readConfig("scraperUrl") || readConfig("SITE_BASE_URL") || "https://new2.moviesdrive.beer";
 
 // Fallback mirrors tried automatically when the primary domain is down.
 export const SITE_MIRRORS: string[] =
   readConfig("scraperMirrors") ||
   readConfig("SITE_MIRRORS") || [
+    "https://new2.moviesdrive.beer",
     "https://new1.moviesdrive.christmas",
     "https://new2.moviesdrive.christmas",
     "https://new3.moviesdrive.christmas",
