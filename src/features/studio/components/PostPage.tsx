@@ -198,7 +198,7 @@ export default function PostPage({
 
   return (
     <>
-    <article className="post-content overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] shadow-2xl ring-1 ring-white/5 backdrop-blur-2xl">
+    <article className="post-content site-glass overflow-hidden rounded-3xl shadow-2xl">
       {/* Top logos */}
       {POST_LOGOS_TOP && POST_LOGOS_TOP.length > 0 && (
         <div className="p-4 flex items-center justify-center gap-4">
@@ -209,10 +209,10 @@ export default function PostPage({
       )}
 
       {/* Back / Share - glass bar */}
-      <div className="flex items-center gap-2 border-b border-white/10 bg-white/[0.02] px-3 py-2.5 backdrop-blur-xl sm:px-5">
+      <div className="flex items-center gap-2 border-b border-white/10 bg-white/[0.025] px-3 py-2.5 backdrop-blur-xl sm:px-5">
         <button
           onClick={onBack}
-          className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm font-medium text-slate-200 backdrop-blur-xl transition-all hover:bg-white/15 hover:text-white active:scale-95"
+          className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5 text-sm font-medium text-foreground backdrop-blur-xl transition-all hover:bg-white/15 active:scale-95"
         >
           <ArrowLeft className="h-4 w-4" strokeWidth={2.5} />
           Back
@@ -228,7 +228,7 @@ export default function PostPage({
               /* noop */
             }
           }}
-          className="ml-auto inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm font-medium text-slate-200 backdrop-blur-xl transition-all hover:bg-white/15 hover:text-white active:scale-95"
+          className="ml-auto inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5 text-sm font-medium text-foreground backdrop-blur-xl transition-all hover:bg-white/15 active:scale-95"
         >
           <Share2 className="h-4 w-4" strokeWidth={2.2} />
           Share
@@ -368,28 +368,28 @@ export default function PostPage({
       {/* Download links popup - centered modal */}
       {popup && (
         <div
-          className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto p-4 sm:items-center"
+          className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto p-3 sm:p-5"
           role="dialog"
           aria-modal="true"
           onClick={() => !popup.loading && setPopup(null)}
         >
-          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
+          <div className="absolute inset-0 bg-wine-950/80 backdrop-blur-md" />
           <div
             onClick={(e) => e.stopPropagation()}
-            className="relative my-auto w-full max-w-md overflow-hidden rounded-3xl border border-white/15 bg-gradient-to-br from-[#1a0a0a] via-[#0a0a0a] to-[#1a0a0a] shadow-2xl ring-1 ring-red-500/20 max-h-[calc(100vh-2rem)] flex flex-col"
+            className="site-glass relative my-auto flex max-h-[calc(100dvh-1.5rem)] w-full max-w-md flex-col overflow-hidden rounded-3xl border-rose-200/20 bg-gradient-to-br from-wine-900/95 via-wine-950/95 to-wine-900/95 shadow-2xl sm:max-h-[calc(100dvh-2.5rem)]"
           >
             <div className="flex flex-shrink-0 items-start justify-between gap-3 border-b border-white/10 bg-white/[0.04] px-5 py-4">
               <div className="min-w-0">
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-red-300/80">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-rose-200/80">
                   Direct Download
                 </p>
-                <h4 className="mt-0.5 line-clamp-2 text-sm font-bold text-white">
+                <h4 className="mt-0.5 line-clamp-2 text-sm font-bold text-foreground">
                   {popup.label}
                 </h4>
                 {(() => {
                   const ep = extractEpisode(popup.label);
                   return ep ? (
-                    <span className="mt-1.5 inline-flex items-center gap-1.5 rounded-md border border-red-400/30 bg-red-500/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-red-200">
+                    <span className="mt-1.5 inline-flex items-center gap-1.5 rounded-md border border-rose-300/30 bg-rose-500/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-rose-100">
                       <Tv className="h-3 w-3" strokeWidth={2.5} />
                       {ep}
                     </span>
@@ -399,14 +399,14 @@ export default function PostPage({
               <button
                 onClick={() => !popup.loading && setPopup(null)}
                 disabled={popup.loading}
-                className="flex-shrink-0 rounded-full border border-white/15 bg-white/5 p-1.5 text-slate-300 transition-colors hover:bg-white/15 hover:text-white disabled:opacity-50"
+                className="shrink-0 rounded-full border border-white/15 bg-white/5 p-1.5 text-muted-foreground transition-colors hover:bg-white/15 hover:text-foreground disabled:opacity-50"
                 aria-label="Close"
               >
                 <X className="h-4 w-4" strokeWidth={2.5} />
               </button>
             </div>
 
-            <div className="overflow-y-auto px-5 py-5">
+            <div className="min-h-0 overflow-y-auto overscroll-contain px-4 py-4 sm:px-5 sm:py-5">
               {popup.loading && (
                 <div className="flex flex-col items-center justify-center gap-3 py-8">
                   <Loader2 className="h-8 w-8 animate-spin text-red-400" strokeWidth={2.2} />
@@ -436,10 +436,10 @@ export default function PostPage({
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={() => openSmartlink(u)}
-                          className="group flex items-center justify-between gap-3 rounded-2xl border border-white/15 bg-gradient-to-r from-red-500/10 to-red-600/5 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:border-red-400/50 hover:from-red-500/20 hover:to-red-600/15 hover:shadow-lg active:scale-[0.98]"
+                        className="group flex items-center justify-between gap-3 rounded-2xl border border-rose-200/20 bg-gradient-to-r from-rose-700/25 to-wine-800/30 px-3 py-3 text-sm font-semibold text-foreground shadow-sm transition-all hover:-translate-y-0.5 hover:border-rose-300/50 hover:from-rose-700/40 hover:to-wine-800/45 hover:shadow-lg active:scale-[0.98] sm:px-4"
                         >
                           <span className="flex items-center gap-3">
-                            <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-red-400/30 bg-red-500/20 text-red-200">
+                            <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-rose-300/30 bg-rose-500/20 text-rose-100">
                               <Icon className="h-4 w-4" strokeWidth={2.4} />
                             </span>
                             <span className="flex flex-col">
@@ -450,7 +450,7 @@ export default function PostPage({
                                   return ep ? (
                                     <>
                                       <Tv className="h-2.5 w-2.5" strokeWidth={2.5} />
-                                      <span className="font-bold text-red-300">{ep}</span>
+                                      <span className="font-bold text-rose-200">{ep}</span>
                                       <span>·</span>
                                     </>
                                   ) : null;
@@ -459,7 +459,7 @@ export default function PostPage({
                               </span>
                             </span>
                           </span>
-                          <ArrowRight className="h-4 w-4 text-red-300 transition-transform group-hover:translate-x-1" strokeWidth={2.4} />
+                          <ArrowRight className="h-4 w-4 shrink-0 text-rose-200 transition-transform group-hover:translate-x-1" strokeWidth={2.4} />
                         </a>
                       );
                     })}

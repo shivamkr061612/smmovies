@@ -27,7 +27,7 @@ export default function HeroSlider({ movies, onOpenMovie }: HeroSliderProps) {
   return (
     <div className="relative">
       {/* Banner: proper cinematic aspect on desktop, taller poster-like on mobile */}
-      <div className="relative aspect-[3/4] sm:aspect-[16/9] lg:aspect-[21/9] overflow-hidden rounded-3xl bg-slate-900 shadow-2xl ring-1 ring-white/10">
+      <div className="relative aspect-[4/3] overflow-hidden rounded-3xl bg-wine-900 shadow-2xl ring-1 ring-white/10 sm:aspect-[16/9] lg:aspect-[21/9]">
         {slides.map((m, i) => (
           <div
             key={m.id}

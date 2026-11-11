@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Search, X, Menu, SlidersHorizontal } from "lucide-react";
+import { Search, X, Menu, SlidersHorizontal, RotateCcw, Sparkles } from "lucide-react";
 import { SITE_LOGO, SITE_NAME, SITE_TITLE } from "../config/site";
 import MobileHeaderSlider from "./MobileHeaderSlider";
 
@@ -16,6 +16,7 @@ export default function Header({ searchValue, onSearch, onMenuClick, onLogoClick
   const [quality, setQuality] = useState<string>("");
   const [language, setLanguage] = useState<string>("");
   const [year, setYear] = useState<string>("");
+  const [format, setFormat] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -42,21 +43,21 @@ export default function Header({ searchValue, onSearch, onMenuClick, onLogoClick
   }, [open]);
 
   const submitSearch = (q: string) => {
-    const parts = [q, quality, language, year].filter(Boolean);
+    const parts = [q, quality, language, year, format].filter(Boolean);
     onSearch(parts.join(" ").trim());
   };
 
-  const hasActiveFilter = Boolean(quality || language || year);
+  const hasActiveFilter = Boolean(quality || language || year || format);
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-gradient-to-b from-[#0a0a0a]/95 to-[#0a0a0a]/85 backdrop-blur-xl">
+      <header className="sticky top-0 z-40 border-b border-white/10 bg-wine-950/80 backdrop-blur-2xl">
         <div className="mx-auto flex max-w-7xl items-center gap-2 px-3 py-3 sm:gap-3 sm:px-4 sm:py-3.5">
           {/* Hamburger */}
           <button
             onClick={onMenuClick}
             aria-label="Menu"
-            className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-white transition-all hover:border-red-400/40 hover:bg-red-500/10 active:scale-95"
+            className="site-glass flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-foreground transition-all hover:border-rose-400/40 hover:bg-rose-400/10 active:scale-95"
           >
             <Menu className="h-5 w-5" strokeWidth={2.4} />
           </button>
@@ -92,7 +93,7 @@ export default function Header({ searchValue, onSearch, onMenuClick, onLogoClick
               <button
                 onClick={() => setOpen(true)}
                 aria-label="Search"
-                className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-white transition-all hover:border-red-400/40 hover:bg-red-500/10 active:scale-95"
+                className="site-glass flex h-10 w-10 items-center justify-center rounded-xl text-foreground transition-all hover:border-rose-400/40 hover:bg-rose-400/10 active:scale-95"
               >
                 <Search className="h-5 w-5" strokeWidth={2.4} />
               </button>
@@ -103,16 +104,16 @@ export default function Header({ searchValue, onSearch, onMenuClick, onLogoClick
                   e.preventDefault();
                   submitSearch(searchValue);
                 }}
-                className="flex w-full items-center gap-1.5 rounded-2xl border border-red-400/40 bg-white/[0.06] px-2 py-1.5 shadow-lg shadow-red-500/10 sm:w-72 md:w-96"
+                className="site-glass flex w-full items-center gap-1.5 rounded-2xl border-rose-300/40 px-2 py-1.5 shadow-lg sm:w-72 md:w-96"
               >
-                <Search className="ml-1 h-4 w-4 flex-shrink-0 text-red-300" strokeWidth={2.4} />
+                <Search className="ml-1 h-4 w-4 shrink-0 text-rose-300" strokeWidth={2.4} />
                 <input
                   ref={inputRef}
                   type="text"
                   value={searchValue}
                   onChange={(e) => onSearch(e.target.value)}
                   placeholder="Search movies, shows…"
-                  className="min-w-0 flex-1 bg-transparent px-1 text-sm text-white placeholder-slate-400 outline-none"
+                  className="min-w-0 flex-1 bg-transparent px-1 text-sm text-foreground placeholder:text-muted-foreground outline-none"
                 />
                 <button
                   type="button"
@@ -120,13 +121,13 @@ export default function Header({ searchValue, onSearch, onMenuClick, onLogoClick
                   aria-label="Filters"
                   className={`relative flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg transition-colors ${
                     showFilter || hasActiveFilter
-                      ? "bg-red-500/30 text-white"
-                      : "text-slate-300 hover:bg-white/10 hover:text-white"
+                      ? "bg-rose-500/30 text-foreground"
+                      : "text-muted-foreground hover:bg-white/10 hover:text-foreground"
                   }`}
                 >
                   <SlidersHorizontal className="h-3.5 w-3.5" strokeWidth={2.4} />
                   {hasActiveFilter && (
-                    <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-red-400 ring-2 ring-[#0a0a0a]" />
+                    <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-rose-300 ring-2 ring-wine-950" />
                   )}
                 </button>
                 <button
@@ -140,7 +141,7 @@ export default function Header({ searchValue, onSearch, onMenuClick, onLogoClick
                     setYear("");
                   }}
                   aria-label="Close search"
-                  className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
+                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-white/10 hover:text-foreground"
                 >
                   <X className="h-4 w-4" strokeWidth={2.4} />
                 </button>
@@ -151,36 +152,49 @@ export default function Header({ searchValue, onSearch, onMenuClick, onLogoClick
 
         {/* Filter panel */}
         {open && showFilter && (
-          <div className="border-t border-white/10 bg-[#0a0a0a]/95 backdrop-blur-xl">
-            <div className="mx-auto max-w-7xl space-y-2.5 px-3 py-3 sm:px-4">
+          <div className="border-t border-white/10 bg-wine-950/90 backdrop-blur-2xl">
+            <div className="mx-auto grid max-w-7xl gap-4 px-3 py-4 sm:grid-cols-2 sm:px-4">
+              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-rose-200 sm:col-span-2">
+                <Sparkles className="h-4 w-4" />
+                <span>Advanced search</span>
+              </div>
               <FilterRow
                 label="Quality"
                 value={quality}
                 onChange={setQuality}
-                options={["", "480p", "720p", "1080p", "4K", "HEVC", "10Bit"]}
+                options={["", "480p", "720p", "1080p", "2160p", "4K", "HEVC"]}
               />
               <FilterRow
                 label="Language"
                 value={language}
                 onChange={setLanguage}
-                options={["", "Hindi", "English", "Dual Audio", "Tamil", "Telugu", "Malayalam", "Punjabi"]}
+                options={["", "Hindi", "English", "Dual Audio", "Tamil", "Telugu", "Malayalam", "Punjabi", "Bengali"]}
               />
               <FilterRow
                 label="Year"
                 value={year}
                 onChange={setYear}
-                options={["", "2026", "2025", "2024", "2023", "2022", "2021"]}
+                options={["", "2026", "2025", "2024", "2023", "2022", "2021", "2020"]}
               />
-              <div className="flex items-center justify-between pt-1">
+              <FilterRow
+                label="Type"
+                value={format}
+                onChange={setFormat}
+                options={["", "Movie", "Web Series", "Anime"]}
+              />
+              <div className="flex items-center justify-between border-t border-white/10 pt-3 sm:col-span-2">
                 {hasActiveFilter ? (
                   <button
                     onClick={() => {
                       setQuality("");
                       setLanguage("");
                       setYear("");
+                      setFormat("");
+                      onSearch(searchValue);
                     }}
-                    className="text-[11px] font-bold uppercase tracking-wider text-red-300 hover:text-red-200"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-rose-200 hover:text-foreground"
                   >
+                    <RotateCcw className="h-3.5 w-3.5" />
                     Clear filters
                   </button>
                 ) : (
@@ -188,7 +202,7 @@ export default function Header({ searchValue, onSearch, onMenuClick, onLogoClick
                 )}
                 <button
                   onClick={() => submitSearch(searchValue)}
-                  className="rounded-full bg-gradient-to-r from-red-600 to-red-500 px-4 py-1.5 text-xs font-bold text-white shadow-md shadow-red-600/30 transition-all hover:scale-[1.03] active:scale-95"
+                  className="rounded-xl bg-gradient-to-r from-wine-800 to-rose-700 px-4 py-2 text-xs font-bold text-white shadow-md transition-all hover:brightness-110 active:scale-95"
                 >
                   Apply
                 </button>
@@ -214,11 +228,11 @@ function FilterRow({
   options: string[];
 }) {
   return (
-    <div className="flex flex-wrap items-center gap-1.5">
-      <span className="mr-1 w-[68px] flex-shrink-0 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">
+    <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-start">
+      <span className="shrink-0 text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground sm:w-20 sm:pt-2">
         {label}
       </span>
-      <div className="flex flex-wrap gap-1.5">
+      <div className="scrollbar-none flex min-w-0 gap-1.5 overflow-x-auto pb-1">
         {options.map((opt) => {
           const active = value === opt;
           return (
@@ -226,10 +240,10 @@ function FilterRow({
               key={opt || "any"}
               type="button"
               onClick={() => onChange(opt)}
-              className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-all ${
+              className={`shrink-0 rounded-xl border px-3 py-1.5 text-[11px] font-semibold transition-all ${
                 active
-                  ? "border-red-400/60 bg-red-500/25 text-white shadow-sm shadow-red-600/30"
-                  : "border-white/10 bg-white/[0.04] text-slate-300 hover:border-white/25 hover:text-white"
+                  ? "border-rose-300/60 bg-rose-500/25 text-foreground shadow-sm"
+                  : "border-white/10 bg-white/[0.04] text-muted-foreground hover:border-rose-300/40 hover:text-foreground"
               }`}
             >
               {opt || "Any"}

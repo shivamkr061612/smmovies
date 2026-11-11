@@ -247,13 +247,7 @@ export default function App() {
     : "Latest Releases";
 
   return (
-    <div className="min-h-screen bg-black">
-      {/* Decorative red background glows */}
-      <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute -top-40 left-1/2 -translate-x-1/2 rounded-full bg-red-700/15 blur-[80px] h-[180px] w-[180px] sm:h-[320px] sm:w-[320px] md:h-[500px] md:w-[500px]" />
-        <div className="absolute top-1/3 right-0 translate-x-1/3 rounded-full bg-red-600/10 blur-[80px] h-[140px] w-[140px] sm:h-[280px] sm:w-[280px] md:h-[400px] md:w-[400px]" />
-        <div className="absolute bottom-0 left-0 -translate-x-1/3 rounded-full bg-red-800/10 blur-[100px] h-[140px] w-[140px] sm:h-[280px] sm:w-[280px] md:h-[400px] md:w-[400px]" />
-      </div>
+    <div className="site-atmosphere min-h-screen bg-background text-foreground">
 
       <Header
         searchValue={pendingSearch}
@@ -297,8 +291,8 @@ export default function App() {
 
             {/* Section heading */}
             <div className="flex items-center justify-between gap-3 px-1 pt-2">
-              <h2 className="flex items-center gap-2.5 text-xl font-extrabold tracking-tight text-white sm:text-2xl">
-                <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-red-400/30 bg-red-500/10 text-red-300 shadow-inner shadow-red-500/10 backdrop-blur-md">
+              <h2 className="flex min-w-0 items-center gap-2.5 text-xl font-extrabold text-foreground sm:text-2xl">
+                <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-rose-400/30 bg-rose-500/10 text-rose-200 backdrop-blur-md">
                   <Flame className="h-4.5 w-4.5" strokeWidth={2.4} />
                 </span>
                 {listHeading}

@@ -14,6 +14,13 @@ export interface Category {
   slug: string;
 }
 
+export interface AdvancedSearchFilters {
+  quality: string;
+  language: string;
+  year: string;
+  format: string;
+}
+
 export interface ScrapeResult {
   movies: Movie[];
   categories?: Category[];

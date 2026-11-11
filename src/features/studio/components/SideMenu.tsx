@@ -19,6 +19,7 @@ import {
   Palmtree,
   Wheat,
   PlayCircle,
+  Heart,
   type LucideIcon,
 } from "lucide-react";
 import { SITE_LOGO, SITE_NAME, TELEGRAM_URL, WHATSAPP_CHANNEL_URL } from "../config/site";
@@ -76,16 +77,12 @@ export default function SideMenu({
       />
 
       <aside
-        className={`mobile-menu-panel fixed left-0 top-0 z-50 flex h-full w-[86%] max-w-sm flex-col overflow-hidden bg-gradient-to-b from-[#1a0606] via-[#0a0a0a] to-[#050505] shadow-2xl ring-1 ring-red-500/20 transition-transform duration-300 ease-out ${
+        className={`mobile-menu-panel site-glass fixed left-0 top-0 z-50 flex h-dvh w-[88%] max-w-sm flex-col overflow-hidden border-rose-300/20 bg-gradient-to-b from-wine-900/95 via-wine-950/95 to-wine-950/95 shadow-2xl transition-transform duration-300 ease-out ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* Decorative glow */}
-        <div className="pointer-events-none absolute -top-24 -left-16 h-56 w-56 rounded-full bg-red-700/25 blur-3xl" />
-        <div className="pointer-events-none absolute bottom-32 -right-20 h-56 w-56 rounded-full bg-red-900/25 blur-3xl" />
-
         {/* Header */}
-        <div className="relative z-10 flex items-center justify-between border-b border-white/10 bg-[#0a0a0a]/80 px-4 py-4 backdrop-blur-xl">
+        <div className="relative z-10 flex items-center justify-between border-b border-white/10 bg-wine-950/70 px-4 py-4 backdrop-blur-xl">
           <div className="flex items-center gap-3">
             {SITE_LOGO ? (
               <img
@@ -236,8 +233,8 @@ export default function SideMenu({
             </a>
           </div>
 
-          <p className="px-5 pt-4 text-center text-[10px] text-slate-600">
-            © {new Date().getFullYear()} {SITE_NAME || "SM Movies"} · Made with ❤️
+          <p className="flex items-center justify-center gap-1 px-5 pt-4 text-center text-[10px] text-slate-400">
+            © {new Date().getFullYear()} {SITE_NAME || "SM Movies"} · Made with <Heart className="h-3 w-3 fill-rose-400 text-rose-400" aria-label="care" />
           </p>
         </div>
       </aside>

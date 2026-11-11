@@ -1,4 +1,4 @@
-import type { Movie, ScrapeResult, Category, PostContent } from "../types";
+import type { Movie, ScrapeResult, Category, PostContent, AdvancedSearchFilters } from "../types";
 import { SITE_BASE_URL as BASE_URL, SITE_MIRRORS, TELEGRAM_URL } from "../config/site";
 
 const proxyUrl = (url: string) =>
@@ -438,6 +438,33 @@ export async function fetchListing(
     hasNext: pagination.hasNext,
     hasPrev: pagination.hasPrev,
   };
+}
+
+export function filterMoviesForAdvancedSearch(
+  movies: Movie[],
+  filters: AdvancedSearchFilters,
+): Movie[] {
+  const activeFilters = Object.values(filters).some(Boolean);
+  if (!activeFilters) return movies;
+
+  return movies.filter((movie) => {
+    const title = `${movie.title} ${movie.description} ${movie.quality || ""}`.toLowerCase();
+    const quality = (movie.quality || "").toLowerCase();
+    const isSeries = /web\s*series|series|season|episode|s\d{1,2}\s*e\d{1,3}/i.test(title);
+
+    if (filters.quality) {
+      const requested = filters.quality.toLowerCase();
+      const normalizedQuality = requested === "4k" ? "2160" : requested;
+      if (!quality.includes(requested) && !quality.includes(normalizedQuality)) return false;
+    }
+    if (filters.language && !title.includes(filters.language.toLowerCase())) return false;
+    if (filters.year && !title.includes(filters.year)) return false;
+    if (filters.format === "Movie" && isSeries) return false;
+    if (filters.format === "Web Series" && !isSeries) return false;
+    if (filters.format === "Anime" && !/anime|animation/i.test(title)) return false;
+
+    return true;
+  });
 }
 
 // Re-export with previous name for compatibility
