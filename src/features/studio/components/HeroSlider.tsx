@@ -48,7 +48,7 @@ export default function HeroSlider({ movies, onOpenMovie }: HeroSliderProps) {
             <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-transparent sm:from-black/80" />
 
             <div className="relative flex h-full flex-col justify-end p-4 sm:justify-center sm:p-8 md:p-10 max-w-2xl">
-              <h3 className="text-lg font-extrabold leading-tight text-white drop-shadow-2xl sm:text-2xl md:text-4xl">
+              <h3 className="line-clamp-2 max-w-2xl text-lg font-extrabold leading-tight text-white drop-shadow-2xl sm:text-2xl md:text-3xl">
                 {m.title}
               </h3>
               {m.description && (
@@ -71,14 +71,14 @@ export default function HeroSlider({ movies, onOpenMovie }: HeroSliderProps) {
         <button
           onClick={prev}
           aria-label="Previous"
-          className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full border border-white/15 bg-white/10 p-2 text-white shadow-lg backdrop-blur-xl transition-all hover:bg-white/20 active:scale-90 sm:left-3 sm:p-2.5"
+          className="absolute left-2 top-3 z-10 rounded-full border border-white/15 bg-white/10 p-2 text-white shadow-lg backdrop-blur-xl transition-all hover:bg-white/20 active:scale-90 sm:left-3 sm:top-1/2 sm:-translate-y-1/2 sm:p-2.5"
         >
           <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" strokeWidth={2.5} />
         </button>
         <button
           onClick={next}
           aria-label="Next"
-          className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full border border-white/15 bg-white/10 p-2 text-white shadow-lg backdrop-blur-xl transition-all hover:bg-white/20 active:scale-90 sm:right-3 sm:p-2.5"
+          className="absolute right-2 top-3 z-10 rounded-full border border-white/15 bg-white/10 p-2 text-white shadow-lg backdrop-blur-xl transition-all hover:bg-white/20 active:scale-90 sm:right-3 sm:top-1/2 sm:-translate-y-1/2 sm:p-2.5"
         >
           <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" strokeWidth={2.5} />
         </button>

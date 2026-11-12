@@ -16,9 +16,9 @@ import {
   NativeBanner,
   PopunderLoader,
 } from "./components/Ads";
-import { fetchListing, DEFAULT_CATEGORIES, urlToSlug, slugToPath } from "./services/scraper";
+import { fetchListing, filterMoviesForAdvancedSearch, DEFAULT_CATEGORIES, urlToSlug, slugToPath } from "./services/scraper";
 import { SITE_BASE_URL, SITE_TITLE, SITE_DESCRIPTION, SITE_LOGO } from "./config/site";
-import type { Movie, ScrapeResult, Category } from "./types";
+import type { Movie, ScrapeResult, Category, AdvancedSearchFilters } from "./types";
 
 type View =
   | { type: "list" }
@@ -29,6 +29,7 @@ export default function App() {
   const [categories, setCategories] = useState<Category[]>(DEFAULT_CATEGORIES);
   const [searchQuery, setSearchQuery] = useState("");
   const [pendingSearch, setPendingSearch] = useState("");
+  const [searchFilters, setSearchFilters] = useState<AdvancedSearchFilters>({ quality: "", language: "", year: "", format: "" });
   const [selectedCategory, setSelectedCategory] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -217,6 +218,7 @@ export default function App() {
     setCurrentPage(1);
     setSearchQuery("");
     setPendingSearch("");
+    setSearchFilters({ quality: "", language: "", year: "", format: "" });
     setView({ type: "list" });
   };
 
@@ -236,9 +238,12 @@ export default function App() {
   const currentCategoryName =
     categories.find((c) => c.slug === selectedCategory)?.name || "";
 
-  const showHero = view.type === "list" && !selectedCategory && !searchQuery && currentPage === 1;
-  const showNotice = view.type === "list" && !selectedCategory && !searchQuery;
-  const showPagination = view.type === "list" && !searchQuery && (hasNext || hasPrev || totalPages > 1);
+  const displayedMovies = filterMoviesForAdvancedSearch(movies, searchFilters);
+  const hasAdvancedFilters = Object.values(searchFilters).some(Boolean);
+
+  const showHero = view.type === "list" && !selectedCategory && !searchQuery && !hasAdvancedFilters && currentPage === 1;
+  const showNotice = view.type === "list" && !selectedCategory && !searchQuery && !hasAdvancedFilters;
+  const showPagination = view.type === "list" && !searchQuery && !hasAdvancedFilters && (hasNext || hasPrev || totalPages > 1);
 
   const listHeading = searchQuery
     ? `Results for "${searchQuery}"`
@@ -252,6 +257,7 @@ export default function App() {
       <Header
         searchValue={pendingSearch}
         onSearch={setPendingSearch}
+        onFiltersChange={setSearchFilters}
         onMenuClick={() => setMenuOpen(true)}
         onLogoClick={handleHome}
       />
@@ -331,7 +337,7 @@ export default function App() {
               <div className="movies-grid grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
                 {loading
                   ? Array.from({ length: 12 }).map((_, i) => <SkeletonCard key={i} />)
-                  : movies.map((movie) => (
+                  : displayedMovies.map((movie) => (
                       <PosterCard key={movie.id} movie={movie} onClick={handleOpenMovie} />
                     ))}
               </div>
@@ -343,7 +349,7 @@ export default function App() {
             )}
 
             {/* Empty state */}
-            {!loading && !error && movies.length === 0 && (
+            {!loading && !error && displayedMovies.length === 0 && (
               <div className="mx-auto max-w-md rounded-3xl border border-white/10 bg-white/[0.03] p-10 text-center backdrop-blur-xl">
                 <div className="mx-auto mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.05] text-red-300 shadow-inner shadow-red-500/10">
                   <FileVideo className="h-7 w-7" strokeWidth={2.2} />

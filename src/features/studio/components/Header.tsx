@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Search, X, Menu, SlidersHorizontal, RotateCcw, Sparkles } from "lucide-react";
 import { SITE_LOGO, SITE_NAME, SITE_TITLE } from "../config/site";
+import type { AdvancedSearchFilters } from "../types";
 import MobileHeaderSlider from "./MobileHeaderSlider";
 
 interface HeaderProps {
@@ -8,9 +9,12 @@ interface HeaderProps {
   onSearch: (q: string) => void;
   onMenuClick: () => void;
   onLogoClick: () => void;
+  onFiltersChange: (filters: AdvancedSearchFilters) => void;
 }
 
-export default function Header({ searchValue, onSearch, onMenuClick, onLogoClick }: HeaderProps) {
+const EMPTY_FILTERS: AdvancedSearchFilters = { quality: "", language: "", year: "", format: "" };
+
+export default function Header({ searchValue, onSearch, onMenuClick, onLogoClick, onFiltersChange }: HeaderProps) {
   const [open, setOpen] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
   const [quality, setQuality] = useState<string>("");
@@ -43,8 +47,8 @@ export default function Header({ searchValue, onSearch, onMenuClick, onLogoClick
   }, [open]);
 
   const submitSearch = (q: string) => {
-    const parts = [q, quality, language, year, format].filter(Boolean);
-    onSearch(parts.join(" ").trim());
+    onSearch(q.trim());
+    onFiltersChange({ quality, language, year, format });
   };
 
   const hasActiveFilter = Boolean(quality || language || year || format);
@@ -139,6 +143,8 @@ export default function Header({ searchValue, onSearch, onMenuClick, onLogoClick
                     setQuality("");
                     setLanguage("");
                     setYear("");
+                    setFormat("");
+                    onFiltersChange(EMPTY_FILTERS);
                   }}
                   aria-label="Close search"
                   className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-white/10 hover:text-foreground"
@@ -190,6 +196,7 @@ export default function Header({ searchValue, onSearch, onMenuClick, onLogoClick
                       setLanguage("");
                       setYear("");
                       setFormat("");
+                      onFiltersChange(EMPTY_FILTERS);
                       onSearch(searchValue);
                     }}
                     className="inline-flex items-center gap-1.5 text-xs font-semibold text-rose-200 hover:text-foreground"

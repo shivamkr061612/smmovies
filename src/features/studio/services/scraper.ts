@@ -449,7 +449,7 @@ export function filterMoviesForAdvancedSearch(
 
   return movies.filter((movie) => {
     const title = `${movie.title} ${movie.description} ${movie.quality || ""}`.toLowerCase();
-    const quality = (movie.quality || "").toLowerCase();
+    const quality = title;
     const isSeries = /web\s*series|series|season|episode|s\d{1,2}\s*e\d{1,3}/i.test(title);
 
     if (filters.quality) {

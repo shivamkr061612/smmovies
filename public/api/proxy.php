@@ -8,6 +8,7 @@ function allowed_host(string $host): bool {
     return in_array($host, [
         'mdrive.lol',
         'new1.moviesdrive.cyou',
+        'new3.moviesdrive.cyou',
         'new2.moviesdrive.beer',
         'new1.moviesdrive.christmas',
         'new2.moviesdrive.christmas',

@@ -214,8 +214,8 @@
 
 /* Selection */
 ::selection {
-  background-color: rgba(220, 38, 38, 0.45);
-  color: white;
+  background-color: color-mix(in oklab, var(--rose-700) 72%, transparent);
+  color: var(--rose-100);
 }
 
 /* Custom scrollbar for body */
@@ -224,22 +224,22 @@ body::-webkit-scrollbar {
 }
 
 body::-webkit-scrollbar-track {
-  background: #000;
+  background: var(--wine-950);
 }
 
 body::-webkit-scrollbar-thumb {
-  background: #2a0000;
+  background: var(--wine-800);
   border-radius: 3px;
 }
 
 body::-webkit-scrollbar-thumb:hover {
-  background: #dc2626;
+  background: var(--rose-700);
 }
 .page-body h5 a {
-    background-image: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+    background-image: linear-gradient(135deg, var(--wine-800) 0%, var(--rose-700) 100%);
     border-radius: 10px;
-    box-shadow: rgba(220, 38, 38, 0.35) 0px 4px 15px;
-    color: rgb(255, 255, 255);
+    box-shadow: 0 4px 15px color-mix(in oklab, var(--rose-700) 35%, transparent);
+    color: var(--rose-100);
     display: inline-block;
     font-weight: 600;
     padding: 12px 30px;
@@ -255,12 +255,12 @@ body::-webkit-scrollbar-thumb:hover {
   font-size: 1rem;
 }
 
-/* Poster card styling — black surface, white hairline, red hover glow */
+/* Poster card styling — layered cherry glass with a fine highlight */
 .poster-card {
-  background: #0a0a0a;
+  background: linear-gradient(145deg, color-mix(in oklab, var(--wine-800) 38%, transparent), color-mix(in oklab, var(--wine-950) 78%, transparent));
   border-radius: 16px;
-  border: 1px solid rgba(255,255,255,0.08);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.03);
+  border: 1px solid color-mix(in oklab, var(--rose-100) 12%, transparent);
+  box-shadow: 0 6px 20px color-mix(in oklab, var(--wine-950) 65%, transparent), inset 0 1px 0 color-mix(in oklab, var(--rose-100) 7%, transparent);
   cursor: pointer;
   padding: 8px;
   transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.25s ease;
@@ -279,8 +279,8 @@ body::-webkit-scrollbar-thumb:hover {
 }
 .poster-card:hover {
   transform: translateY(-6px);
-  border-color: rgba(220, 38, 38, 0.55);
-  box-shadow: 0 18px 40px rgba(0,0,0,0.8), 0 0 24px rgba(220, 38, 38, 0.25);
+  border-color: color-mix(in oklab, var(--rose-400) 55%, transparent);
+  box-shadow: 0 18px 40px color-mix(in oklab, var(--wine-950) 80%, transparent), 0 0 24px color-mix(in oklab, var(--rose-700) 25%, transparent);
 }
 
 /* If you want a portrait-only variant */
