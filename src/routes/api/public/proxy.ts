@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 const ALLOWED_SOURCE_HOSTS = new Set([
+  "new4.moviesdrive.cyou",
   "new1.moviesdrive.cyou",
   "new3.moviesdrive.cyou",
   "new2.moviesdrive.beer",

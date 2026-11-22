@@ -7,6 +7,7 @@ function allowed_host(string $host): bool {
     $host = strtolower(rtrim($host, '.'));
     return in_array($host, [
         'mdrive.lol',
+        'new4.moviesdrive.cyou',
         'new1.moviesdrive.cyou',
         'new3.moviesdrive.cyou',
         'new2.moviesdrive.beer',

@@ -6,8 +6,6 @@ const proxyUrl = (url: string) =>
 
 const PROXIES = [
   proxyUrl,
-  (url: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
-  (url: string) => `https://mag.dhanjeerider.workers.dev/?url=${encodeURIComponent(url)}`,
 ];
 
 // The upstream site rotates domains (and sometimes goes offline entirely).
@@ -312,13 +310,8 @@ export async function fetchListing(
     const apiUrl = `${BASE_URL.replace(/\/$/, "")}/search.php?q=${encodeURIComponent(
       searchQuery
     )}&page=${page}`;
-    // Route the JSON request through our proxy so CORS + redirects (new3 → new4)
-    // are handled server-side. Try our proxy first, then public fallbacks.
-    const jsonProxies = [
-      proxyUrl,
-      
-      (u: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
-    ];
+    // Keep search on the same-origin proxy to avoid fragile public relays.
+    const jsonProxies = [proxyUrl];
 
     for (const wrap of jsonProxies) {
       try {
